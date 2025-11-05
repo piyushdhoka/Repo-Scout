@@ -359,7 +359,7 @@ const SearchPage = () => {
                     </h3>
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <span>{repositories.length} repositories</span>
-                      {selectedLanguage && <span>• {selectedLanguage}</span>
+                      {selectedLanguage && <span> • {selectedLanguage}</span>}
                     </div>
                   </div>
 
