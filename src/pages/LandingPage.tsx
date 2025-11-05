@@ -328,7 +328,7 @@ export function LandingPage() {
       <StatsBar stats={statsData} />
 
       {/* Features Section */}
-      <section id="features" className="py-20 px-4">
+      <section ref={featuresRef} id="features" className={`features-section py-20 px-4 ${featuresAnimation}`}>
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
@@ -341,12 +341,24 @@ export function LandingPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <FeatureCard
+              <div
                 key={index}
-                icon={feature.icon}
-                title={feature.title}
-                description={feature.description}
-              />
+                onMouseEnter={() => setHoveredFeature(index)}
+                onMouseLeave={() => setHoveredFeature(null)}
+                className="transform transition-all duration-300 hover:scale-105"
+              >
+                <FeatureCard
+                  icon={feature.icon}
+                  title={feature.title}
+                  description={feature.description}
+                  className={hoveredFeature === index ? 'border-blue-500 shadow-blue-500/25' : ''}
+                />
+                {hoveredFeature === index && (
+                  <div className="absolute -top-2 -right-2 bg-blue-600 text-white rounded-full p-2 animate-bounce">
+                    <Sparkles className="h-3 w-3" />
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         </div>
