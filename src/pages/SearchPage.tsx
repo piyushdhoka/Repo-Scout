@@ -144,58 +144,12 @@ const SearchPage = () => {
 
   return (
     <div className="flex h-screen bg-black text-white overflow-hidden">
-      {/* Sidebar */}
-      <div className={`bg-[#1a1a1a] border-r border-gray-800 transition-all duration-300 relative ${
-        isSidebarCollapsed ? 'w-16' : 'w-64'
-      }`}>
-
-        <div className="h-full flex flex-col">
-          {/* Sidebar top section for the toggle button (separate from nav items) */}
-          <div className={`px-2 py-3 border-b border-gray-800 flex ${isSidebarCollapsed ? 'justify-center' : 'justify-end'}`}>
-            <button
-              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-              className="bg-gray-800 p-1 rounded border border-gray-700 hover:bg-gray-700 transition-all"
-              aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            >
-              {isSidebarCollapsed ? <ChevronRight className="h-4 w-4 text-gray-300" /> : <ChevronLeft className="h-4 w-4 text-gray-300" />}
-            </button>
-          </div>
-
-          {/* Navigation */}
-          <nav className="flex-1 overflow-y-auto py-4">
-            {/* USER SECTION */}
-            {user && !isSidebarCollapsed && (
-              <div className="px-4 mb-4">
-                <h3 className="text-xs uppercase text-gray-500 font-semibold mb-2">USER</h3>
-                <div className="space-y-1">
-                  <Link to="/" className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition-colors">
-                    <Home className="h-5 w-5 flex-shrink-0" />
-                    <span>Back to Home</span>
-                  </Link>
-                </div>
-              </div>
-            )}
-
-            {/* GENERAL */}
-            <div className="px-4 mb-4">
-              {!isSidebarCollapsed && <h3 className="text-xs uppercase text-gray-500 font-semibold mb-2">GENERAL</h3>}
-              <div className="space-y-1">
-                <button className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg bg-gray-800 text-white hover:bg-gray-700 transition-colors ${isSidebarCollapsed ? 'justify-center' : ''}`}>
-                  <Search className="h-5 w-5 flex-shrink-0" />
-                  {!isSidebarCollapsed && <span>Search</span>}
-                </button>
-                {user && (
-                  <button className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition-colors ${isSidebarCollapsed ? 'justify-center' : ''}`}>
-                    <History className="h-5 w-5 flex-shrink-0" />
-                    {!isSidebarCollapsed && <span>My History</span>}
-                  </button>
-                )}
-                <button className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition-colors ${isSidebarCollapsed ? 'justify-center' : ''}`}>
-                  <Flame className="h-5 w-5 flex-shrink-0" />
-                  {!isSidebarCollapsed && <span>Trending</span>}
-                </button>
-              </div>
-            </div>
+      {/* Enhanced Sidebar */}
+      <EnhancedSidebar
+        user={user}
+        isCollapsed={isSidebarCollapsed}
+        onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+      />
 
             {/* FEEDBACK */}
             <div className="px-4 mb-4">
