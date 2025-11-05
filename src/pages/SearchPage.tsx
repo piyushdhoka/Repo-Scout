@@ -340,80 +340,179 @@ const SearchPage = () => {
           </div>
         </div>
 
-        {/* Table Content */}
-        <div className="flex-1 overflow-y-auto">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-full">
-              <Loader />
-            </div>
-          ) : issues.length > 0 ? (
-            <div className="px-6 py-4">
-              {/* Table Header */}
-              <div className="grid grid-cols-12 gap-4 pb-3 border-b border-gray-800 text-sm text-gray-400 font-semibold">
-                <div className="col-span-4">Repository</div>
-                <div className="col-span-2">Language</div>
-                <div className="col-span-2">Tags</div>
-                <div className="col-span-1">Stars</div>
-                <div className="col-span-1">Forks</div>
-                <div className="col-span-2">Popularity</div>
-              </div>
-
-          {/* Table Rows */}
-          {issues
-            .map((issue, idx) => ({
-              issue,
-              idx,
-              popularity: getPopularityBadge(1000 + idx * 100).text
-            }))
-            .filter(({ popularity }) => !selectedPopularity || popularity === selectedPopularity)
-            .slice(0, 50)
-            .map(({ issue, idx, popularity }) => (
-            <div
-              key={issue.url}
-              className="grid grid-cols-12 gap-4 py-4 border-b border-gray-900 hover:bg-gray-900/50 transition-colors"
-            >
-              <div className="col-span-4 flex items-center gap-3">
-                <div className="w-8 h-8 rounded bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
-                  {issue.repo.split('/')[1]?.[0]?.toUpperCase() || 'R'}
+        {/* Enhanced Content Area */}
+        <div className="flex-1 overflow-y-auto bg-gradient-to-b from-black to-gray-950">
+          {viewMode === 'repositories' ? (
+            <div className="p-6">
+              {isRepositoriesLoading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <RepositoryCardSkeleton key={i} variant="default" />
+                  ))}
                 </div>
-                <a
-                  href={`https://github.com/${issue.repo}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-semibold text-white hover:text-blue-400 transition-colors truncate"
-                >
-                  {issue.repo.split('/')[1] || issue.repo}
-                </a>
-              </div>
-              <div className="col-span-2 flex items-center">
-                <Badge className={getLanguageBadgeClass(issue.language) || "bg-gray-600 text-white px-2 py-0.5 text-xs"}>
-                  {issue.language}
-                </Badge>
-              </div>
-              <div className="col-span-2 flex flex-wrap gap-1 items-center">
-                {issue.labels.slice(0, 3).map((label) => (
-                  <Badge key={label} className="bg-gray-700 text-gray-300 border-0 px-2 py-0.5 text-xs">
-                    {label.substring(0, 12)}
-                  </Badge>
-                ))}
-              </div>
-              <div className="col-span-1 text-gray-300 flex items-center">{issue.comments}+</div>
-              <div className="col-span-1 text-gray-300 flex items-center">{idx + 1}k</div>
-              <div className="col-span-2 flex items-center">
-                <Badge className={`${getPopularityBadge(1000 + idx * 100).class} px-2 py-0.5 text-xs`}>
-                  {popularity}
-                </Badge>
-              </div>
-            </div>
-          ))}
-            </div>
-          ) : hasSearched ? (
-            <div className="flex items-center justify-center h-full text-gray-400">
-              No issues found. Try adjusting your search.
+              ) : repositories.length > 0 ? (
+                <>
+                  {/* Repository Stats Header */}
+                  <div className="mb-6 flex items-center justify-between">
+                    <h3 className="text-xl font-semibold text-white">
+                      {hasSearched ? 'Search Results' : 'Trending Repositories'}
+                    </h3>
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <span>{repositories.length} repositories</span>
+                      {selectedLanguage && <span>• {selectedLanguage}</span>
+                    </div>
+                  </div>
+
+                  {/* Repository Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {repositories.map((repo) => (
+                      <EnhancedRepositoryCard
+                        key={repo.id}
+                        repository={{
+                          id: repo.id.toString(),
+                          name: repo.name,
+                          fullName: repo.full_name,
+                          description: repo.description || '',
+                          language: repo.language,
+                          stars: repo.stargazers_count,
+                          forks: repo.forks_count,
+                          watchers: repo.watchers_count,
+                          openIssues: repo.open_issues_count,
+                          createdAt: repo.created_at,
+                          updatedAt: repo.updated_at,
+                          owner: {
+                            login: repo.owner.login,
+                            avatarUrl: repo.owner.avatar_url,
+                            type: repo.owner.type
+                          },
+                          topics: repo.topics,
+                          license: repo.license,
+                          isPrivate: repo.private,
+                          size: repo.size
+                        }}
+                        onCardClick={(repository) => {
+                          window.open(`https://github.com/${repository.fullName}`, '_blank')
+                        }}
+                      />
+                    ))}
+                  </div>
+                </>
+              ) : hasSearched ? (
+                <div className="flex flex-col items-center justify-center h-64 text-gray-400">
+                  <Code className="h-12 w-12 mb-4 text-gray-600" />
+                  <h3 className="text-lg font-medium mb-2">No repositories found</h3>
+                  <p className="text-sm">Try adjusting your search terms or filters</p>
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full mb-4">
+                    <Zap className="h-4 w-4 text-blue-400" />
+                    <span className="text-sm text-blue-400 font-medium">Explore Trending Repositories</span>
+                  </div>
+                  <p className="text-gray-400 mb-6">
+                    Discover curated open source projects from Y Combinator and top contributors
+                  </p>
+                  <InteractiveButton
+                    onClick={loadTrendingRepositories}
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                  >
+                    <TrendingUp className="h-4 w-4 mr-2" />
+                    Load Trending
+                  </InteractiveButton>
+                </div>
+              )}
             </div>
           ) : (
-            <div className="flex items-center justify-center h-full text-gray-400">
-              Enter a search term to find open source issues
+            // Issues view (existing functionality but enhanced)
+            <div className="px-6 py-4">
+              {isLoading ? (
+                <div className="flex items-center justify-center h-full">
+                  <Loader />
+                </div>
+              ) : issues.length > 0 ? (
+                <>
+                  {/* Issues Header */}
+                  <div className="mb-6 flex items-center justify-between">
+                    <h3 className="text-xl font-semibold text-white">Open Issues</h3>
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <span>{issues.length} issues</span>
+                      {selectedLanguage && <span>• {selectedLanguage}</span>}
+                    </div>
+                  </div>
+
+                  {/* Enhanced Issues Table */}
+                  <div className="space-y-3">
+                    {issues
+                      .map((issue, idx) => ({
+                        issue,
+                        idx,
+                        popularity: getPopularityBadge(1000 + idx * 100).text
+                      }))
+                      .filter(({ popularity }) => !selectedPopularity || popularity === selectedPopularity)
+                      .slice(0, 20)
+                      .map(({ issue, idx, popularity }) => (
+                        <div
+                          key={issue.url}
+                          className="p-4 bg-gradient-to-r from-gray-900/50 to-gray-800/50 border border-gray-800 rounded-xl hover:from-gray-800/70 hover:to-gray-700/70 transition-all hover:transform hover:-translate-y-1 cursor-pointer group"
+                          onClick={() => window.open(issue.url, '_blank')}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
+                                {issue.repo.split('/')[1]?.[0]?.toUpperCase() || 'R'}
+                              </div>
+                              <div>
+                                <h4 className="font-semibold text-white group-hover:text-blue-400 transition-colors">
+                                  {issue.repo.split('/')[1] || issue.repo}
+                                </h4>
+                                <p className="text-sm text-gray-400 line-clamp-1">{issue.title}</p>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-4">
+                              <Badge className={getLanguageBadgeClass(issue.language) || "bg-gray-600 text-white"}>
+                                {issue.language}
+                              </Badge>
+                              <div className="flex flex-wrap gap-1">
+                                {issue.labels.slice(0, 2).map((label) => (
+                                  <Badge key={label} className="bg-gray-700 text-gray-300 border-0 text-xs">
+                                    {label.length > 12 ? `${label.substring(0, 12)}...` : label}
+                                  </Badge>
+                                ))}
+                              </div>
+                              <Badge className={`${getPopularityBadge(1000 + idx * 100).class} text-xs`}>
+                                {popularity}
+                              </Badge>
+                            </div>
+                          </div>
+
+                          <div className="mt-3 flex items-center gap-6 text-sm text-gray-400">
+                            <span className="flex items-center gap-1">
+                              <MessageSquare className="h-3 w-3" />
+                              {issue.comments} comments
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Star className="h-3 w-3" />
+                              {idx + 1}k stars
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <GitFork className="h-3 w-3" />
+                              {idx + 1}k forks
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </>
+              ) : hasSearched ? (
+                <div className="flex items-center justify-center h-full text-gray-400">
+                  No issues found. Try adjusting your search.
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-full text-gray-400">
+                  Enter a search term to find open source issues
+                </div>
+              )}
             </div>
           )}
         </div>
