@@ -370,4 +370,4 @@ const SearchPage = () => {
   );
 };
 
-export default Index;
+export default SearchPage;
