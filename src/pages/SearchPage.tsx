@@ -213,77 +213,130 @@ const SearchPage = () => {
             )}
           </div>
 
-          {/* Search Bar */}
-          <div className="flex items-center gap-3">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <Input
-                placeholder="Curated open source projects from Y Combinator"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleSearchClick(e);
-                }}
-                className="pl-10 bg-gray-900 border-gray-700 text-white placeholder:text-gray-500"
-              />
-            </div>
-            <div className="flex gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="bg-gray-800 border-gray-700 text-white hover:bg-gray-700 gap-2">
-                    {selectedLanguage || 'All Languages'}
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56 bg-gray-900 border border-gray-700 text-white">
-                  <DropdownMenuItem onClick={() => setSelectedLanguage("")}>All Languages</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSelectedLanguage("JavaScript")}>JavaScript</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSelectedLanguage("TypeScript")}>TypeScript</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSelectedLanguage("Python")}>Python</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSelectedLanguage("Go")}>Go</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSelectedLanguage("Rust")}>Rust</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSelectedLanguage("Java")}>Java</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSelectedLanguage("C++")}>C++</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSelectedLanguage("PHP")}>PHP</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="bg-gray-800 border-gray-700 text-white hover:bg-gray-700 gap-2">
-                    {selectedPopularity || 'All Popularity'}
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56 bg-gray-900 border border-gray-700 text-white">
-                  <DropdownMenuItem onClick={() => setSelectedPopularity("")}>All Popularity</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSelectedPopularity("Legendary")}>Legendary</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSelectedPopularity("Famous")}>Famous</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSelectedPopularity("Popular")}>Popular</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSelectedPopularity("Growing")}>Growing</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <Button 
-                onClick={handleSearchClick}
-                disabled={isLoading}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                {isLoading ? "Searching..." : "Search"}
-              </Button>
-            </div>
-          </div>
+          {/* Enhanced Search Bar */}
+          <div className="flex flex-col space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Input
+                  placeholder={
+                    viewMode === 'repositories'
+                      ? "Search repositories, topics, or owners..."
+                      : "Search issues from curated open source projects"
+                  }
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleSearchClick(e);
+                  }}
+                  className="pl-10 bg-gray-900/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-blue-500/50 focus:bg-gray-900/80 transition-all"
+                />
+              </div>
 
-          {/* Filter Tags */}
-          <div className="flex flex-wrap gap-2 mt-3">
-            {["JavaScript", "Python", "TypeScript", "Go", "Rust"].map((lang) => (
-              <Badge
-                key={lang}
-                variant={selectedLanguage === lang ? "default" : "secondary"}
-                className={`cursor-pointer ${selectedLanguage === lang ? 'bg-blue-600' : 'bg-gray-800 hover:bg-gray-700'}`}
-                onClick={() => setSelectedLanguage(selectedLanguage === lang ? "" : lang)}
-              >
-                {lang}
-              </Badge>
-            ))}
+              {/* Enhanced Filters */}
+              <div className="flex items-center gap-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="bg-gray-900/50 border-gray-700 text-white hover:bg-gray-800/50 gap-2">
+                      <Code className="h-4 w-4" />
+                      {selectedLanguage || 'Language'}
+                      <ChevronDown className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56 bg-gray-900 border border-gray-700 text-white">
+                    <DropdownMenuItem onClick={() => setSelectedLanguage("")}>All Languages</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSelectedLanguage("JavaScript")}>JavaScript</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSelectedLanguage("TypeScript")}>TypeScript</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSelectedLanguage("Python")}>Python</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSelectedLanguage("Go")}>Go</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSelectedLanguage("Rust")}>Rust</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSelectedLanguage("Java")}>Java</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSelectedLanguage("C++")}>C++</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSelectedLanguage("PHP")}>PHP</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSelectedLanguage("Swift")}>Swift</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSelectedLanguage("Kotlin")}>Kotlin</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="bg-gray-900/50 border-gray-700 text-white hover:bg-gray-800/50 gap-2">
+                      <TrendingUp className="h-4 w-4" />
+                      {sortBy === 'stars' ? 'Most Stars' : sortBy === 'created' ? 'Newest' : 'Recently Updated'}
+                      <ChevronDown className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56 bg-gray-900 border border-gray-700 text-white">
+                    <DropdownMenuItem onClick={() => setSortBy('updated')}>Recently Updated</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortBy('stars')}>Most Stars</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortBy('created')}>Newest First</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <InteractiveButton
+                  onClick={handleSearchClick}
+                  disabled={isLoading}
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                  glow
+                  ripple
+                >
+                  <Search className="h-4 w-4 mr-2" />
+                  {isLoading ? "Searching..." : viewMode === 'repositories' ? "Search Repos" : "Search Issues"}
+                </InteractiveButton>
+              </div>
+            </div>
+
+            {/* Enhanced Filter Tags */}
+            <div className="flex items-center gap-4">
+              <div className="flex flex-wrap gap-2">
+                {viewMode === 'repositories' ? (
+                  <>
+                    {["JavaScript", "TypeScript", "Python", "Go", "Rust", "Vue", "React", "Docker"].map((lang) => (
+                      <Badge
+                        key={lang}
+                        className={`cursor-pointer transition-all ${
+                          selectedLanguage === lang
+                            ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white border-0 px-3 py-1.5'
+                            : 'bg-gray-800/50 text-gray-300 border border-gray-700 hover:bg-gray-700/50 hover:text-white px-3 py-1.5'
+                        }`}
+                        onClick={() => setSelectedLanguage(selectedLanguage === lang ? "" : lang)}
+                      >
+                        {lang}
+                      </Badge>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    {["JavaScript", "Python", "TypeScript", "Go", "Rust"].map((lang) => (
+                      <Badge
+                        key={lang}
+                        className={`cursor-pointer transition-all ${
+                          selectedLanguage === lang
+                            ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white border-0 px-3 py-1.5'
+                            : 'bg-gray-800/50 text-gray-300 border border-gray-700 hover:bg-gray-700/50 hover:text-white px-3 py-1.5'
+                        }`}
+                        onClick={() => setSelectedLanguage(selectedLanguage === lang ? "" : lang)}
+                      >
+                        {lang}
+                      </Badge>
+                    ))}
+                  </>
+                )}
+              </div>
+
+              {viewMode === 'repositories' && !hasSearched && (
+                <div className="flex items-center gap-2 ml-auto">
+                  <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white border-0">
+                    <Zap className="h-3 w-3 mr-1" />
+                    Trending
+                  </Badge>
+                  <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0">
+                    <Star className="h-3 w-3 mr-1" />
+                    Y Combinator
+                  </Badge>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
