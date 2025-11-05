@@ -26,15 +26,18 @@ interface LoginFormProps {
 
 export function LoginForm({ onTabChange }: LoginFormProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const [loginSuccess, setLoginSuccess] = useState(false)
   const { login, loginWithGoogle, loginWithGithub } = useAuth()
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    setError
+    formState: { errors, isSubmitting },
+    setError,
+    clearErrors
   } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema)
+    resolver: zodResolver(loginSchema),
+    mode: 'onChange'
   })
 
   const onSubmit = async (data: LoginFormData) => {
