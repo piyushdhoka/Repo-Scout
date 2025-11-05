@@ -114,21 +114,36 @@ const SearchPage = () => {
 
           {/* Navigation */}
           <nav className="flex-1 overflow-y-auto py-4">
+            {/* USER SECTION */}
+            {user && !isSidebarCollapsed && (
+              <div className="px-4 mb-4">
+                <h3 className="text-xs uppercase text-gray-500 font-semibold mb-2">USER</h3>
+                <div className="space-y-1">
+                  <Link to="/" className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition-colors">
+                    <Home className="h-5 w-5 flex-shrink-0" />
+                    <span>Back to Home</span>
+                  </Link>
+                </div>
+              </div>
+            )}
+
             {/* GENERAL */}
             <div className="px-4 mb-4">
               {!isSidebarCollapsed && <h3 className="text-xs uppercase text-gray-500 font-semibold mb-2">GENERAL</h3>}
               <div className="space-y-1">
                 <button className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg bg-gray-800 text-white hover:bg-gray-700 transition-colors ${isSidebarCollapsed ? 'justify-center' : ''}`}>
-                  <Home className="h-5 w-5 flex-shrink-0" />
-                  {!isSidebarCollapsed && <span>Home</span>}
+                  <Search className="h-5 w-5 flex-shrink-0" />
+                  {!isSidebarCollapsed && <span>Search</span>}
                 </button>
+                {user && (
+                  <button className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition-colors ${isSidebarCollapsed ? 'justify-center' : ''}`}>
+                    <History className="h-5 w-5 flex-shrink-0" />
+                    {!isSidebarCollapsed && <span>My History</span>}
+                  </button>
+                )}
                 <button className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition-colors ${isSidebarCollapsed ? 'justify-center' : ''}`}>
                   <Flame className="h-5 w-5 flex-shrink-0" />
                   {!isSidebarCollapsed && <span>Trending</span>}
-                </button>
-                <button className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition-colors ${isSidebarCollapsed ? 'justify-center' : ''}`}>
-                  <Search className="h-5 w-5 flex-shrink-0" />
-                  {!isSidebarCollapsed && <span>Discover</span>}
                 </button>
               </div>
             </div>
