@@ -175,9 +175,28 @@ const SearchPage = () => {
         {/* Header */}
         <div className="border-b border-gray-800 px-6 py-4">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <h2 className="text-2xl font-bold text-white">REPO SCOUT</h2>
+            <div className="flex items-center gap-4">
+              <div>
+                <h2 className="text-2xl font-bold text-white">REPO SCOUT</h2>
+                <p className="text-sm text-gray-400">
+                  {user ? `Welcome back, ${user.displayName || user.email?.split('@')[0]}!` : 'Find your next open source contribution'}
+                </p>
+              </div>
             </div>
+            {user && (
+              <div className="flex items-center gap-3">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
+                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+                    {user.displayName ? user.displayName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : user.email?.slice(0, 2).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="text-right">
+                  <p className="text-sm font-medium text-white">{user.displayName || 'User'}</p>
+                  <p className="text-xs text-gray-400">{user.email}</p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Search Bar */}
