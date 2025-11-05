@@ -236,12 +236,24 @@ export function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative py-20 px-4">
+      <section ref={heroRef} className={`hero-section relative py-20 px-4 ${heroAnimation}`}>
         <div className="container mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
               <div className="space-y-4">
-                <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="flex items-center gap-2 px-3 py-1 bg-blue-600/20 border border-blue-600/30 rounded-full">
+                    <Sparkles className="h-4 w-4 text-blue-400" />
+                    <span className="text-sm text-blue-400 font-medium">Now Live! 🎉</span>
+                  </div>
+                  <Tooltip content="See what's new">
+                    <Button variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300 p-1">
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  </Tooltip>
+                </div>
+
+                <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-white via-blue-200 to-purple-400 bg-clip-text text-transparent animate-gradient">
                   Find Your Next Open Source Contribution
                 </h1>
                 <p className="text-xl text-gray-400 leading-relaxed">
@@ -251,42 +263,62 @@ export function LandingPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button
+                <InteractiveButton
                   size="lg"
                   onClick={() => window.location.href = '/auth'}
-                  className="bg-blue-600 hover:bg-blue-700 text-white text-lg px-8 py-3"
+                  className="bg-blue-600 hover:bg-blue-700 text-white text-lg px-8 py-3 auth-button"
+                  glow
+                  ripple
                 >
                   Start Searching
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-                <Button
+                </InteractiveButton>
+                <InteractiveButton
                   size="lg"
                   variant="outline"
                   onClick={() => scrollToSection('features')}
                   className="border-gray-700 bg-gray-900 text-white hover:bg-gray-800 text-lg px-8 py-3"
                 >
-                  Learn More
-                </Button>
+                  <Play className="mr-2 h-5 w-5" />
+                  Watch Demo
+                </InteractiveButton>
               </div>
 
-              <div className="flex items-center gap-8 text-sm text-gray-400">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-400" />
-                  <span>No credit card required</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-400" />
-                  <span>Free forever</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Github className="h-4 w-4" />
-                  <span>GitHub integrated</span>
-                </div>
+              <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400">
+                <Tooltip content="No hidden fees or subscriptions">
+                  <div className="flex items-center gap-2 hover:text-gray-300 transition-colors cursor-pointer">
+                    <CheckCircle className="h-4 w-4 text-green-400" />
+                    <span>No credit card required</span>
+                  </div>
+                </Tooltip>
+                <Tooltip content="Always free for contributors">
+                  <div className="flex items-center gap-2 hover:text-gray-300 transition-colors cursor-pointer">
+                    <CheckCircle className="h-4 w-4 text-green-400" />
+                    <span>Free forever</span>
+                  </div>
+                </Tooltip>
+                <Tooltip content="Connect with your GitHub account">
+                  <div className="flex items-center gap-2 hover:text-gray-300 transition-colors cursor-pointer">
+                    <Github className="h-4 w-4" />
+                    <span>GitHub integrated</span>
+                  </div>
+                </Tooltip>
               </div>
             </div>
 
-            <div className="relative">
+            <div className="relative search-preview">
               <DashboardPreview />
+              {/* Floating action buttons */}
+              <div className="absolute -top-4 -right-4 animate-bounce">
+                <div className="bg-blue-600 text-white rounded-full p-3 shadow-lg">
+                  <Star className="h-5 w-5" />
+                </div>
+              </div>
+              <div className="absolute -bottom-4 -left-4 animate-pulse">
+                <div className="bg-purple-600 text-white rounded-full p-3 shadow-lg">
+                  <Target className="h-5 w-5" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
