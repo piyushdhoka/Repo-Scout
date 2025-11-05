@@ -3,13 +3,15 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/hooks/useAuth'
-import { Loader2, Mail, Github } from 'lucide-react'
+import { InteractiveButton } from '@/components/UI/InteractiveButton'
+import { InteractiveInput } from '@/components/UI/InteractiveInput'
+import { Tooltip } from '@/components/UI/Tooltip'
+import { Loader2, Mail, Github, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react'
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
