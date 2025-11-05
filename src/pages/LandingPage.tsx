@@ -199,19 +199,37 @@ export function LandingPage() {
             </nav>
 
             <div className="flex items-center gap-4">
-              <Button
-                variant="outline"
-                onClick={() => window.location.href = '/auth'}
-                className="border-gray-700 bg-gray-900 text-white hover:bg-gray-800"
-              >
-                Sign In
-              </Button>
-              <Button
-                onClick={() => window.location.href = '/auth'}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                Get Started
-              </Button>
+              <Tooltip content="Sign in to your existing account">
+                <InteractiveButton
+                  variant="outline"
+                  onClick={() => window.location.href = '/auth'}
+                  className="border-gray-700 bg-gray-900 text-white hover:bg-gray-800"
+                >
+                  Sign In
+                </InteractiveButton>
+              </Tooltip>
+
+              <Tooltip content="Start your open source journey">
+                <InteractiveButton
+                  onClick={() => window.location.href = '/auth'}
+                  className="auth-button bg-blue-600 hover:bg-blue-700 text-white"
+                  glow
+                  ripple
+                >
+                  Get Started
+                  <Rocket className="ml-2 h-4 w-4" />
+                </InteractiveButton>
+              </Tooltip>
+
+              <Tooltip content="Take a quick tour of Repo Scout">
+                <Button
+                  variant="ghost"
+                  onClick={startTour}
+                  className="text-gray-400 hover:text-white p-2"
+                >
+                  <Target className="h-5 w-5" />
+                </Button>
+              </Tooltip>
             </div>
           </div>
         </div>
