@@ -201,7 +201,7 @@ export function Header() {
                 <div className="flex items-center justify-between mb-8">
                   <div className="flex items-center gap-2">
                     <img
-                      src="/logo.png"
+                      src="/repo_logo.png"
                       alt="Repo Scout logo"
                       className="h-8 w-8 rounded-full object-cover shadow-sm"
                     />
