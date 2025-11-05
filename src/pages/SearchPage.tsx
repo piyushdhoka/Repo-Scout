@@ -151,43 +151,6 @@ const SearchPage = () => {
         onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
       />
 
-            {/* FEEDBACK */}
-            <div className="px-4 mb-4">
-              {!isSidebarCollapsed && <h3 className="text-xs uppercase text-gray-500 font-semibold mb-2">FEEDBACK</h3>}
-              <div className="space-y-1">
-                <button className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition-colors ${isSidebarCollapsed ? 'justify-center' : ''}`}>
-                  <Star className="h-5 w-5 flex-shrink-0" />
-                  {!isSidebarCollapsed && <span>Suggest Feature</span>}
-                </button>
-                <button className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition-colors ${isSidebarCollapsed ? 'justify-center' : ''}`}>
-                  <Bug className="h-5 w-5 flex-shrink-0" />
-                  {!isSidebarCollapsed && <span>Report Bug</span>}
-                </button>
-              </div>
-            </div>
-
-            {/* SOCIAL */}
-            <div className="px-4 mb-4">
-              {!isSidebarCollapsed && <h3 className="text-xs uppercase text-gray-500 font-semibold mb-2">SOCIAL</h3>}
-              <div className="space-y-1">
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition-colors ${isSidebarCollapsed ? 'justify-center' : ''}`}>
-                  <Twitter className="h-5 w-5 flex-shrink-0" />
-                  {!isSidebarCollapsed && <span>Twitter</span>}
-                </a>
-                <a href="https://github.com/vivekd16/Repo-Scout" target="_blank" rel="noopener noreferrer" className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition-colors ${isSidebarCollapsed ? 'justify-center' : ''}`}>
-                  <Github className="h-5 w-5 flex-shrink-0" />
-                  {!isSidebarCollapsed && <span>GitHub</span>}
-                </a>
-                <button className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition-colors ${isSidebarCollapsed ? 'justify-center' : ''}`}>
-                  <Mail className="h-5 w-5 flex-shrink-0" />
-                  {!isSidebarCollapsed && <span>Email</span>}
-                </button>
-              </div>
-            </div>
-          </nav>
-        </div>
-      </div>
-
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden bg-black">
         {/* Header */}
