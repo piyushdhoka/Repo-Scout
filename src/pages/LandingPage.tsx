@@ -444,22 +444,59 @@ export function LandingPage() {
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-blue-900 to-purple-900">
+      <section ref={ctaRef} className={`py-20 px-4 bg-gradient-to-r from-blue-900 to-purple-900 ${ctaAnimation}`}>
         <div className="container mx-auto text-center">
+          <div className="mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full mb-4">
+              <Rocket className="h-4 w-4 text-yellow-400" />
+              <span className="text-sm text-yellow-400 font-medium">Join 10,000+ Contributors</span>
+            </div>
+          </div>
+
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Ready to Start Contributing?
           </h2>
           <p className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
             Join thousands of developers who are already making meaningful contributions to open source projects.
           </p>
-          <Button
-            size="lg"
-            onClick={() => window.location.href = '/auth'}
-            className="bg-white text-blue-900 hover:bg-gray-100 text-lg px-8 py-3"
-          >
-            Get Started Now
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <InteractiveButton
+              size="lg"
+              onClick={() => window.location.href = '/auth'}
+              className="bg-white text-blue-900 hover:bg-gray-100 text-lg px-8 py-3 auth-button"
+              glow
+              ripple
+            >
+              Get Started Now
+              <Rocket className="ml-2 h-5 w-5" />
+            </InteractiveButton>
+
+            <InteractiveButton
+              size="lg"
+              variant="outline"
+              onClick={startTour}
+              className="border-white/30 bg-white/10 text-white hover:bg-white/20 text-lg px-8 py-3"
+            >
+              <Target className="mr-2 h-5 w-5" />
+              Take Tour
+            </InteractiveButton>
+          </div>
+
+          <div className="mt-8 flex items-center justify-center gap-8 text-sm text-gray-300">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4 text-green-400" />
+              <span>Set up in 2 minutes</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4 text-green-400" />
+              <span>No credit card required</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4 text-green-400" />
+              <span>Cancel anytime</span>
+            </div>
+          </div>
         </div>
       </section>
 
