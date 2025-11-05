@@ -1,10 +1,14 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { FeatureCard } from '@/components/Landing/FeatureCard'
 import { TestimonialCard } from '@/components/Landing/TestimonialCard'
 import { StatsBar } from '@/components/Landing/StatsBar'
 import { DashboardPreview } from '@/components/Landing/DashboardPreview'
+import { InteractiveButton } from '@/components/UI/InteractiveButton'
+import { Tooltip } from '@/components/UI/Tooltip'
+import { useGuidedTour } from '@/components/UI/GuidedTour'
+import { useScrollAnimation } from '@/hooks/useScrollAnimations'
 import {
   Search,
   Code,
@@ -15,7 +19,11 @@ import {
   ArrowRight,
   Github,
   Star,
-  CheckCircle
+  CheckCircle,
+  Play,
+  Sparkles,
+  Target,
+  Rocket
 } from 'lucide-react'
 
 const statsData = [
