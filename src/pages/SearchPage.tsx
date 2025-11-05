@@ -40,33 +40,73 @@ const SearchPage = () => {
 
   const handleSearch = async () => {
     setIsLoading(true);
+    setIsRepositoriesLoading(true);
     setHasSearched(true);
     incrementSearchCount();
+
     try {
-      const results = await searchGitHubIssues(
-        selectedLanguage || undefined,
-        selectedLabels.length > 0 ? selectedLabels : undefined,
-        searchQuery || undefined,
-        100,
-        1,
-        organization || undefined
-      );
-      setIssues(results);
-      toast({
-        title: "Search completed",
-        description: `Found ${results.length} issues`,
-      });
+      if (viewMode === 'repositories') {
+        // Search repositories
+        const repoResults = await githubRepositoryAPI.searchRepositories({
+          query: searchQuery,
+          language: selectedLanguage,
+          sort: sortBy,
+          perPage: 20
+        });
+        setRepositories(repoResults);
+        toast({
+          title: "Repository search completed",
+          description: `Found ${repoResults.length} repositories`,
+        });
+      } else {
+        // Search issues (existing functionality)
+        const results = await searchGitHubIssues(
+          selectedLanguage || undefined,
+          selectedLabels.length > 0 ? selectedLabels : undefined,
+          searchQuery || undefined,
+          100,
+          1,
+          organization || undefined
+        );
+        setIssues(results);
+        toast({
+          title: "Search completed",
+          description: `Found ${results.length} issues`,
+        });
+      }
     } catch (error) {
       console.error('Search failed:', error);
       toast({
         title: "Search failed",
-        description: "Failed to fetch issues from GitHub. Please try again.",
+        description: "Failed to fetch data from GitHub. Please try again.",
         variant: "destructive",
       });
     } finally {
       setIsLoading(false);
+      setIsRepositoriesLoading(false);
     }
   };
+
+  const loadTrendingRepositories = useCallback(async () => {
+    setIsRepositoriesLoading(true);
+    try {
+      const trendingRepos = await githubRepositoryAPI.getYCombinatorRepositories();
+      setRepositories(trendingRepos.slice(0, 12));
+    } catch (error) {
+      console.error('Failed to load trending repositories:', error);
+      // Use mock data as fallback
+      setRepositories(githubRepositoryAPI.getMockRepositories());
+    } finally {
+      setIsRepositoriesLoading(false);
+    }
+  }, []);
+
+  // Load trending repositories on mount
+  useEffect(() => {
+    if (viewMode === 'repositories' && !hasSearched) {
+      loadTrendingRepositories();
+    }
+  }, [viewMode, hasSearched, loadTrendingRepositories]);
 
   const handleSearchClick = (e: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>) => {
     e.preventDefault();
