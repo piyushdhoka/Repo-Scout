@@ -89,6 +89,10 @@ export function LandingPage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
               <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <img src="/repo_logo.png" alt="Repo Scout logo" className="h-12 w-12 rounded-full object-cover shadow" />
+                  <span className="sr-only">Repo Scout</span>
+                </div>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="flex items-center gap-2 px-3 py-1 bg-blue-600/20 border border-blue-600/30 rounded-full">
                     <Sparkles className="h-4 w-4 text-blue-400" />
