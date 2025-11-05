@@ -549,6 +549,9 @@ export function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* Guided Tour Component */}
+      <TourComponent />
     </div>
   )
 }
