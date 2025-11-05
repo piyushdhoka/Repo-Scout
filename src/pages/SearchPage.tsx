@@ -25,11 +25,15 @@ const SearchPage = () => {
   const [selectedLanguage, setSelectedLanguage] = useState("");
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   const [issues, setIssues] = useState<ProcessedIssue[]>([]);
+  const [repositories, setRepositories] = useState<GitHubRepository[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isRepositoriesLoading, setIsRepositoriesLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [organization, setOrganization] = useState("");
   const [selectedPopularity, setSelectedPopularity] = useState<string>("");
+  const [viewMode, setViewMode] = useState<'issues' | 'repositories'>('repositories');
+  const [sortBy, setSortBy] = useState<'updated' | 'stars' | 'created'>('updated');
 
   const { incrementSearchCount } = useSearchLimit();
   const { toast } = useToast();
