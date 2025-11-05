@@ -3,8 +3,8 @@ import { Link, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { InteractiveButton } from '@/components/UI/InteractiveButton'
-import { Tooltip } from '@/components/UI/Tooltip'
+import { InteractiveButton } from '@/components/ui/InteractiveButton'
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import {
   Search,
@@ -200,12 +200,9 @@ export function EnhancedSidebar({
     const isHovered = hoveredItem === item.id
 
     const content = (
-      <Tooltip
-        content={isCollapsed ? item.label : item.description || ''}
-        position="right"
-        delay={300}
-      >
-        <button
+      <Tooltip delayDuration={300}>
+        <TooltipTrigger asChild>
+          <button
           onClick={item.onClick}
           className={cn(
             'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 group relative overflow-hidden',
@@ -246,7 +243,7 @@ export function EnhancedSidebar({
           }
           onMouseEnter={() => setHoveredItem(item.id)}
           onMouseLeave={() => setHoveredItem(null)}
-        >
+          >
           {/* Animated background effect */}
           <div
             className={cn(
@@ -294,7 +291,11 @@ export function EnhancedSidebar({
           {isHovered && !active && (
             <div className="absolute right-2 top-1/2 -translate-y-1/2 w-1 h-6 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full" />
           )}
-        </button>
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="right">
+          {isCollapsed ? item.label : item.description || ''}
+        </TooltipContent>
       </Tooltip>
     )
 
@@ -438,7 +439,7 @@ export function EnhancedSidebar({
             <InteractiveButton
               variant="outline"
               size="sm"
-              className="w-full border-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-gradient-to-r from-blue-500/10 to-purple-500/10 hover:from-blue-500/20 hover:to-purple-500/20"
+              className="w-full text-transparent bg-gradient-to-r from-blue-500/10 to-purple-500/10 hover:from-blue-500/20 hover:to-purple-500/20"
             >
               Upgrade Pro
             </InteractiveButton>
@@ -451,29 +452,34 @@ export function EnhancedSidebar({
           isCollapsed ? 'flex-col' : 'justify-center'
         )}>
           {socialItems.slice(0, isCollapsed ? 3 : socialItems.length).map((item) => (
-            <Tooltip key={item.id} content={item.label} position="top">
-              {item.href ? (
-                <a
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cn(
-                    'p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800/50 transition-all duration-200',
-                    isCollapsed ? 'mx-auto' : ''
-                  )}
-                >
-                  {item.icon}
-                </a>
-              ) : (
-                <button
-                  className={cn(
-                    'p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800/50 transition-all duration-200',
-                    isCollapsed ? 'mx-auto' : ''
-                  )}
-                >
-                  {item.icon}
-                </button>
-              )}
+            <Tooltip key={item.id}>
+              <TooltipTrigger asChild>
+                {item.href ? (
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cn(
+                      'p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800/50 transition-all duration-200',
+                      isCollapsed ? 'mx-auto' : ''
+                    )}
+                  >
+                    {item.icon}
+                  </a>
+                ) : (
+                  <button
+                    className={cn(
+                      'p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800/50 transition-all duration-200',
+                      isCollapsed ? 'mx-auto' : ''
+                    )}
+                  >
+                    {item.icon}
+                  </button>
+                )}
+              </TooltipTrigger>
+              <TooltipContent>
+                {item.label}
+              </TooltipContent>
             </Tooltip>
           ))}
         </div>

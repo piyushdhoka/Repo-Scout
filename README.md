@@ -45,6 +45,35 @@ A web app to discover and contribute to open source projects by finding GitHub i
    npm run server
    ```
 
+## Authentication setup (Google / GitHub)
+
+To enable Google and GitHub sign-in for the app you'll need a Firebase project and to configure OAuth providers:
+
+1. Create a Firebase project at https://console.firebase.google.com and register a Web app.
+2. In the Firebase console go to Authentication -> Sign-in method, and enable:
+   - Google
+   - GitHub (you'll need to create a GitHub OAuth app and provide its Client ID and Client Secret to Firebase)
+3. When creating the GitHub OAuth app, set the Authorization callback URL to the Firebase handler for your project, e.g.:
+   - https://YOUR_PROJECT_ID.firebaseapp.com/__/auth/handler
+4. Copy the Firebase SDK config values and add them to the root `.env` (copy `.env.example`):
+
+```bash
+# root .env (Vite)
+VITE_FIREBASE_API_KEY=...
+VITE_FIREBASE_AUTH_DOMAIN=YOUR_PROJECT_ID.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=YOUR_PROJECT_ID
+VITE_FIREBASE_STORAGE_BUCKET=...
+VITE_FIREBASE_MESSAGING_SENDER_ID=...
+VITE_FIREBASE_APP_ID=...
+VITE_FIREBASE_MEASUREMENT_ID=...
+```
+
+5. (Optional) If you want the backend to proxy GitHub requests using a token, create `server/.env` from `server/.env.example` and set `GITHUB_TOKEN`.
+
+Notes:
+- After adding `.env` files restart the dev servers so Vite picks up the new env vars.
+- In development the app uses signInWithPopup which should work on `localhost` — make sure your Firebase/auth settings allow the host if necessary.
+
 
 ## Contributing
 

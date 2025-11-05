@@ -104,25 +104,18 @@ class GitHubRepositoryAPI {
       searchQueries.push(`stars:>${stars}`)
     }
 
-    // Filter for repositories from Y Combinator or high-quality sources
-    const ycQueries = [
-      'topic:ycombinator',
-      'topic:yc-backed',
-      'organization:facebook',
-      'organization:microsoft',
-      'organization:google',
-      'organization:netflix',
-      'organization:airbnb',
-      'organization:uber',
-      'organization:spotify',
-      'organization:dropbox',
-      'stars:>1000',
-      'pushed:>2023-01-01'
-    ]
+    // Add quality filters - use simpler query to avoid 422 errors
+    // Only add basic filters to keep query length manageable
+    if (!query && !language) {
+      // Default trending query: just show popular repos
+      searchQueries.push('stars:>1000')
+      searchQueries.push('pushed:>2023-01-01')
+    } else {
+      // For user searches, just add a star filter for quality
+      searchQueries.push('stars:>10')
+    }
 
-    const finalQuery = searchQueries.length > 0
-      ? `${searchQueries.join(' ')} ${ycQueries.join(' OR ')}`
-      : ycQueries.join(' OR ')
+    const finalQuery = searchQueries.join(' ')
 
     const params = new URLSearchParams({
       q: finalQuery,
@@ -158,11 +151,16 @@ class GitHubRepositoryAPI {
 
     const createdDate = date.toISOString().split('T')[0]
 
-    const languageQuery = language ? `language:${language}` : ''
-    const query = `created:>${createdDate} stars:>10 ${languageQuery}`
+    const searchQueries: string[] = []
+    searchQueries.push(`created:>${createdDate}`)
+    searchQueries.push('stars:>10')
+    
+    if (language) {
+      searchQueries.push(`language:${language}`)
+    }
 
     return this.searchRepositories({
-      query,
+      query: searchQueries.join(' '),
       sort: 'stars',
       perPage: 50
     })
@@ -176,31 +174,24 @@ class GitHubRepositoryAPI {
   }
 
   async getYCombinatorRepositories(): Promise<GitHubRepository[]> {
-    const queries = [
-      'topic:ycombinator',
-      'topic:yc-backed',
-      'topic:yc-w23',
-      'topic:yc-w24',
-      'topic:yc-s21',
-      'topic:yc-s22',
-      'topic:yc-f21',
-      'topic:yc-f22'
-    ].join(' OR ')
-
+    // Simplified query - just use one topic instead of ORing many
     return this.searchRepositories({
-      query: queries,
+      query: 'topic:ycombinator stars:>10',
       sort: 'stars',
       perPage: 50
     })
   }
 
   async getPopularRepositories(language = '', minStars = 1000): Promise<GitHubRepository[]> {
-    const starsQuery = `stars:>${minStars}`
-    const languageQuery = language ? `language:${language}` : ''
-    const query = `${starsQuery} ${languageQuery}`.trim()
+    const searchQueries: string[] = []
+    searchQueries.push(`stars:>${minStars}`)
+    
+    if (language) {
+      searchQueries.push(`language:${language}`)
+    }
 
     return this.searchRepositories({
-      query,
+      query: searchQueries.join(' '),
       sort: 'stars',
       perPage: 50
     })

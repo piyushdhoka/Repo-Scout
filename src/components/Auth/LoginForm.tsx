@@ -8,9 +8,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/hooks/useAuth'
-import { InteractiveButton } from '@/components/UI/InteractiveButton'
-import { InteractiveInput } from '@/components/UI/InteractiveInput'
-import { Tooltip } from '@/components/UI/Tooltip'
+import { InteractiveButton } from '@/components/ui/InteractiveButton'
+import { InteractiveInput } from '@/components/ui/InteractiveInput'
 import { Loader2, Mail, Github, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react'
 
 const loginSchema = z.object({

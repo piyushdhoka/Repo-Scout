@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, ChevronLeft, ChevronRight, ChevronDown, Home, Flame, Star, Bug, Twitter, Github, Mail, Filter as FilterIcon, Star as StarIcon, User, History, Code, Zap, TrendingUp } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, ChevronDown, Home, Flame, Star, Bug, Twitter, Github, Mail, Filter as FilterIcon, Star as StarIcon, User, History, Code, Zap, TrendingUp, MessageSquare, GitFork } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { searchGitHubIssues, ProcessedIssue } from "@/services/githubApi";
@@ -13,11 +13,10 @@ import Loader from "@/components/Loader";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useSearchLimit } from "@/hooks/useSearchLimit";
 import { IssueHistory } from "@/components/IssueHistory";
-import { EnhancedSidebar } from "@/components/UI/EnhancedSidebar";
-import { EnhancedRepositoryCard, RepositoryCardSkeleton } from "@/components/UI/EnhancedRepositoryCard";
+import { EnhancedSidebar } from "@/components/ui/EnhancedSidebar";
+import { EnhancedRepositoryCard, RepositoryCardSkeleton } from "@/components/ui/EnhancedRepositoryCard";
 import { githubRepositoryAPI, GitHubRepository } from "@/services/githubRepositoryApi";
-import { InteractiveButton } from "@/components/UI/InteractiveButton";
-import { Skeleton } from "@/components/UI/Skeleton";
+import { InteractiveButton } from "@/components/ui/InteractiveButton";
 
 const SearchPage = () => {
   const { user } = useAuth();
@@ -386,7 +385,7 @@ const SearchPage = () => {
                             type: repo.owner.type
                           },
                           topics: repo.topics,
-                          license: repo.license,
+                          license: repo.license?.spdx_id || repo.license?.name || '',
                           isPrivate: repo.private,
                           size: repo.size
                         }}

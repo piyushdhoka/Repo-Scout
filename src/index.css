@@ -96,6 +96,12 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+@layer utilities {
+  .font-instrument {
+    font-family: 'Instrument Serif', 'Instrument Serif Fallback', serif;
   }
 }

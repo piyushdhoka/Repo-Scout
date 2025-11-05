@@ -80,12 +80,6 @@ export function Header() {
     return location.pathname === path
   }
 
-  const navItems = [
-    { label: 'Features', action: () => scrollToSection('features') },
-    { label: 'How It Works', action: () => scrollToSection('how-it-works') },
-    { label: 'Testimonials', action: () => scrollToSection('testimonials') }
-  ]
-
   return (
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
@@ -101,20 +95,11 @@ export function Header() {
             <div className="h-8 w-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
               <Search className="h-4 w-4 text-white" />
             </div>
-            <span className="text-xl font-bold text-white">Repo Scout</span>
+            <span className="text-xl font-bold text-white font-instrument">Repo Scout</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-6">
-            {location.pathname === '/' && navItems.map((item) => (
-              <button
-                key={item.label}
-                onClick={item.action}
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                {item.label}
-              </button>
-            ))}
+          <nav className="hidden md:flex items-center gap-6 font-instrument">
             {isActivePath('/search') && (
               <Link
                 to="/"
@@ -216,7 +201,7 @@ export function Header() {
                     <div className="h-8 w-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
                       <Search className="h-4 w-4 text-white" />
                     </div>
-                    <span className="text-xl font-bold text-white">Repo Scout</span>
+                    <span className="text-xl font-bold text-white font-instrument">Repo Scout</span>
                   </div>
                   <Button
                     variant="ghost"
@@ -229,15 +214,6 @@ export function Header() {
                 </div>
 
                 <nav className="flex-1 space-y-4">
-                  {location.pathname === '/' && navItems.map((item) => (
-                    <button
-                      key={item.label}
-                      onClick={item.action}
-                      className="w-full text-left px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-900 rounded-lg transition-colors"
-                    >
-                      {item.label}
-                    </button>
-                  ))}
                   {isActivePath('/search') && (
                     <Link
                       to="/"

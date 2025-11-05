@@ -3,8 +3,8 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { InteractiveButton } from '@/components/UI/InteractiveButton'
-import { Tooltip } from '@/components/UI/Tooltip'
+import { InteractiveButton } from '@/components/ui/InteractiveButton'
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import {
   Star,
@@ -293,24 +293,34 @@ export function EnhancedRepositoryCard({
         <div className="flex items-center gap-2">
           {isHovered && !isCompact && (
             <>
-              <Tooltip content="View Issues">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0 text-gray-400 hover:text-blue-400"
-                >
-                  <MessageSquare className="h-4 w-4" />
-                </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 text-gray-400 hover:text-blue-400"
+                  >
+                    <MessageSquare className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  View Issues
+                </TooltipContent>
               </Tooltip>
 
-              <Tooltip content="View on GitHub">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0 text-gray-400 hover:text-green-400"
-                >
-                  <ExternalLink className="h-4 w-4" />
-                </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 text-gray-400 hover:text-green-400"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  View on GitHub
+                </TooltipContent>
               </Tooltip>
             </>
           )}
