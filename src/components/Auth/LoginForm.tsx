@@ -123,47 +123,63 @@ export function LoginForm({ onTabChange }: LoginFormProps) {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-gray-300">Email</Label>
-            <Input
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div className="space-y-4">
+            <InteractiveInput
               id="email"
               type="email"
-              placeholder="Enter your email"
-              {...register('email')}
-              className="border-gray-700 bg-gray-900 text-white placeholder-gray-500"
+              label="Email Address"
+              placeholder="Enter your email address"
+              leftIcon={<Mail className="h-4 w-4" />}
+              error={errors.email?.message}
+              helperText="We'll never share your email with anyone else."
+              validateOnBlur={(value) => {
+                if (!value) return 'Email is required'
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                  return 'Please enter a valid email address'
+                }
+                return null
+              }}
               disabled={isLoading}
+              className="w-full"
+              {...register('email')}
             />
-            {errors.email && (
-              <p className="text-sm text-red-400">{errors.email.message}</p>
-            )}
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-gray-300">Password</Label>
-            <Input
+            <InteractiveInput
               id="password"
               type="password"
+              label="Password"
               placeholder="Enter your password"
-              {...register('password')}
-              className="border-gray-700 bg-gray-900 text-white placeholder-gray-500"
+              leftIcon={<AlertCircle className="h-4 w-4" />}
+              showPasswordToggle
+              showClearButton
+              error={errors.password?.message}
+              helperText="Must be at least 6 characters long."
+              validateOnBlur={(value) => {
+                if (!value) return 'Password is required'
+                if (value.length < 6) {
+                  return 'Password must be at least 6 characters'
+                }
+                return null
+              }}
               disabled={isLoading}
+              className="w-full"
+              {...register('password')}
             />
-            {errors.password && (
-              <p className="text-sm text-red-400">{errors.password.message}</p>
-            )}
           </div>
 
-          <Button
+          <InteractiveButton
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-            disabled={isLoading}
+            loading={isLoading || isSubmitting}
+            success={loginSuccess}
+            successMessage="Welcome back!"
+            glow
+            ripple
+            disabled={isLoading || isSubmitting}
           >
-            {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
-            ) : null}
-            Sign In
-          </Button>
+            Sign In to Your Account
+          </InteractiveButton>
         </form>
       </CardContent>
       <CardFooter className="flex flex-col space-y-2">
