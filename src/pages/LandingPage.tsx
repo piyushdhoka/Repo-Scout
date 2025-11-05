@@ -98,6 +98,65 @@ const testimonials = [
 ]
 
 export function LandingPage() {
+  const [showTour, setShowTour] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [hoveredFeature, setHoveredFeature] = useState<number | null>(null)
+
+  const { ref: heroRef, inView: heroInView, animationClasses: heroAnimation } = useScrollAnimation()
+  const { ref: featuresRef, inView: featuresInView, animationClasses: featuresAnimation } = useScrollAnimation()
+  const { ref: statsRef, inView: statsInView } = useScrollAnimation()
+  const { ref: ctaRef, inView: ctaInView, animationClasses: ctaAnimation } = useScrollAnimation()
+
+  // Guided tour configuration
+  const tourSteps = [
+    {
+      id: 'welcome',
+      selector: '.hero-section',
+      title: 'Welcome to Repo Scout! 🎯',
+      content: 'Let\'s take a quick tour to help you discover amazing open source contributions. I\'ll show you the key features to get you started.',
+      position: 'bottom' as const,
+      icon: <Sparkles className="h-5 w-5 text-blue-400" />
+    },
+    {
+      id: 'search',
+      selector: '.search-preview',
+      title: 'Smart Search 🔍',
+      content: 'Use our intelligent search to find issues that match your skills. Filter by language, labels, or specific projects to discover the perfect contribution opportunity.',
+      position: 'bottom' as const,
+      icon: <Search className="h-5 w-5 text-green-400" />
+    },
+    {
+      id: 'features',
+      selector: '.features-section',
+      title: 'Powerful Features ⚡',
+      content: 'Explore our curated projects, real-time updates, and progress tracking. Everything you need to build your open source portfolio.',
+      position: 'bottom' as const,
+      icon: <Zap className="h-5 w-5 text-purple-400" />
+    },
+    {
+      id: 'cta',
+      selector: '.auth-button',
+      title: 'Join the Community 🚀',
+      content: 'Sign up to save your preferences, track your contributions, and get personalized recommendations. It\'s completely free!',
+      position: 'left' as const,
+      icon: <Rocket className="h-5 w-5 text-orange-400" />
+    }
+  ]
+
+  const { startTour, closeTour, TourComponent } = useGuidedTour(tourSteps, 'reposcout-landing-tour')
+
+  useEffect(() => {
+    // Auto-start tour after 3 seconds for first-time visitors
+    const timer = setTimeout(() => {
+      const hasSeenTour = localStorage.getItem('reposcout-landing-tour')
+      if (!hasSeenTour) {
+        startTour()
+      }
+    }, 3000)
+
+    return () => clearTimeout(timer)
+  }, [startTour])
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId)
     if (element) {
