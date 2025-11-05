@@ -154,14 +154,47 @@ const SearchPage = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden bg-black">
         {/* Header */}
-        <div className="border-b border-gray-800 px-6 py-4">
+        <div className="border-b border-gray-800 px-6 py-4 bg-gradient-to-b from-gray-900 to-black">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
-              <div>
-                <h2 className="text-2xl font-bold text-white">REPO SCOUT</h2>
-                <p className="text-sm text-gray-400">
-                  {user ? `Welcome back, ${user.displayName || user.email?.split('@')[0]}!` : 'Find your next open source contribution'}
-                </p>
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                  <Code className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                    REPO SCOUT
+                  </h2>
+                  <p className="text-sm text-gray-400">
+                    {user ? `Welcome back, ${user.displayName || user.email?.split('@')[0]}!` : 'Find your next open source contribution'}
+                  </p>
+                </div>
+              </div>
+
+              {/* View Mode Toggle */}
+              <div className="flex items-center gap-2">
+                <div className="flex items-center bg-gray-900 border border-gray-700 rounded-lg p-1">
+                  <button
+                    onClick={() => setViewMode('repositories')}
+                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                      viewMode === 'repositories'
+                        ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
+                        : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    Repositories
+                  </button>
+                  <button
+                    onClick={() => setViewMode('issues')}
+                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                      viewMode === 'issues'
+                        ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
+                        : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    Issues
+                  </button>
+                </div>
               </div>
             </div>
             {user && (
