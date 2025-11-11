@@ -1,5 +1,5 @@
-// Use proxy in production, direct API in development
-const GITHUB_API_BASE = import.meta.env.PROD ? '/api/github' : 'https://api.github.com';
+// Always use GitHub API directly (no proxy needed)
+const GITHUB_API_BASE = 'https://api.github.com';
 const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN;
 
 // Rate limit tracking

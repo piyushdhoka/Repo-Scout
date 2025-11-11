@@ -58,8 +58,8 @@ function setCachedRepoData(key: string, data: any): void {
 }
 
 class GitHubRepositoryAPI {
-  // Use proxy in production, direct API in development
-  private readonly BASE_URL = import.meta.env.PROD ? '/api/github' : 'https://api.github.com'
+  // Always use GitHub API directly (no proxy needed)
+  private readonly BASE_URL = 'https://api.github.com'
   private readonly GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN
   private rateLimitRemaining: number | null = null
   private rateLimitReset: number | null = null
