@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useAuth } from '@/hooks/useAuth'
 import { Loader2, Mail, ArrowLeft, CheckCircle } from 'lucide-react'
 
@@ -64,13 +63,13 @@ export function PasswordResetForm({ onTabChange }: PasswordResetFormProps) {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Alert className="border-green-900 bg-green-950 text-green-100">
-            <Mail className="h-4 w-4" />
-            <AlertDescription>
+          <div className="flex items-start gap-3 rounded-lg border border-green-900 bg-green-950 p-4 text-green-100">
+            <Mail className="h-5 w-5 mt-0.5" />
+            <p className="text-sm">
               Password reset instructions have been sent to your email address.
               Please check your inbox and follow the link to reset your password.
-            </AlertDescription>
-          </Alert>
+            </p>
+          </div>
 
           <div className="text-sm text-gray-400 space-y-2">
             <p>Didn't receive the email?</p>

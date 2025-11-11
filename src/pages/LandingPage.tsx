@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { DashboardPreview } from '@/components/Landing/DashboardPreview'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useGuidedTour } from '@/components/ui/GuidedTour'
 import { useScrollAnimation } from '@/hooks/useScrollAnimations'
 import {
   Search,
@@ -57,27 +56,6 @@ export function LandingPage() {
       icon: <Rocket className="h-5 w-5 text-orange-400" />
     }
   ]
-
-  const { startTour, closeTour, TourComponent } = useGuidedTour(tourSteps, 'reposcout-landing-tour')
-
-  useEffect(() => {
-    // Auto-start tour after 3 seconds for first-time visitors
-    const timer = setTimeout(() => {
-      const hasSeenTour = localStorage.getItem('reposcout-landing-tour')
-      if (!hasSeenTour) {
-        startTour()
-      }
-    }, 3000)
-
-    return () => clearTimeout(timer)
-  }, [startTour])
-
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
 
   return (
     // keep space for the global sticky header
@@ -225,9 +203,6 @@ export function LandingPage() {
           </div>
         </div>
       </section>
-
-      {/* Guided Tour Component */}
-      <TourComponent />
     </div>
   )
 }

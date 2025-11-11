@@ -3,8 +3,18 @@
 
 export default async function handler(req, res) {
   try {
+    // Reconstruct the path from catch-all route
     const pathParam = (req.query.path || []).join('/');
-    const url = `https://api.github.com/${pathParam}`;
+    
+    // Remove 'path' from query and preserve all other query parameters
+    const queryParams = { ...req.query };
+    delete queryParams.path;
+    
+    // Build query string
+    const queryString = new URLSearchParams(queryParams).toString();
+    const url = `https://api.github.com/${pathParam}${queryString ? `?${queryString}` : ''}`;
+
+    console.log('GitHub API Proxy:', req.method, url);
 
     const headers = {
       'Accept': 'application/vnd.github.v3+json',
@@ -13,7 +23,11 @@ export default async function handler(req, res) {
     };
 
     const token = process.env.GITHUB_TOKEN;
-    if (token) headers['Authorization'] = `Bearer ${token}`;
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    } else {
+      console.warn('No GITHUB_TOKEN found - API rate limits will be restricted');
+    }
 
     // Build fetch options mirroring the incoming request
     const options = {
@@ -27,9 +41,30 @@ export default async function handler(req, res) {
     }
 
     const response = await fetch(url, options);
+    
+    // Forward rate limit headers to client
+    const rateLimitRemaining = response.headers.get('x-ratelimit-remaining');
+    const rateLimitReset = response.headers.get('x-ratelimit-reset');
+    
+    if (rateLimitRemaining) {
+      res.setHeader('X-RateLimit-Remaining', rateLimitRemaining);
+    }
+    if (rateLimitReset) {
+      res.setHeader('X-RateLimit-Reset', rateLimitReset);
+    }
+
     const contentType = response.headers.get('content-type') || '';
 
     res.status(response.status);
+    
+    // Handle rate limiting
+    if (response.status === 403 && rateLimitRemaining === '0') {
+      return res.json({ 
+        error: 'GitHub API rate limit exceeded',
+        resetAt: rateLimitReset ? new Date(parseInt(rateLimitReset) * 1000).toISOString() : null
+      });
+    }
+
     // Pass through JSON and text content; fallback to raw text
     if (contentType.includes('application/json')) {
       const data = await response.json();
@@ -42,6 +77,9 @@ export default async function handler(req, res) {
     }
   } catch (err) {
     console.error('GitHub proxy error:', err);
-    res.status(500).json({ error: 'Failed to fetch from GitHub', details: String(err?.message || err) });
+    res.status(500).json({ 
+      error: 'Failed to fetch from GitHub', 
+      details: String(err?.message || err) 
+    });
   }
 }

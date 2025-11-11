@@ -6,11 +6,9 @@ import {
   signOut,
   sendPasswordResetEmail,
   signInWithPopup,
-  GoogleAuthProvider,
-  GithubAuthProvider
+  GoogleAuthProvider
 } from 'firebase/auth'
-import { auth, googleProvider, githubProvider } from '@/lib/firebase'
-import { toast } from '@/hooks/use-toast'
+import { auth, googleProvider } from '@/lib/firebase'
 
 interface AuthState {
   user: User | null
@@ -39,11 +37,7 @@ export function useAuth() {
         loading: false,
         error: error.message
       })
-      toast({
-        title: "Authentication Error",
-        description: error.message,
-        variant: "destructive"
-      })
+      console.error('Authentication error:', error.message)
     })
 
     return unsubscribe
@@ -56,21 +50,11 @@ export function useAuth() {
 
       const result = await createUserWithEmailAndPassword(auth, email, password)
 
-      toast({
-        title: "Account created successfully",
-        description: "Welcome to Repo Scout!"
-      })
-
       return result.user
     } catch (error: any) {
       const errorMessage = error.message || 'Failed to create account'
       setAuthState(prev => ({ ...prev, error: errorMessage, loading: false }))
-
-      toast({
-        title: "Registration failed",
-        description: errorMessage,
-        variant: "destructive"
-      })
+      console.error('Registration failed:', errorMessage)
 
       throw error
     }
@@ -83,21 +67,11 @@ export function useAuth() {
 
       const result = await signInWithEmailAndPassword(auth, email, password)
 
-      toast({
-        title: "Login successful",
-        description: "Welcome back to Repo Scout!"
-      })
-
       return result.user
     } catch (error: any) {
       const errorMessage = error.message || 'Failed to login'
       setAuthState(prev => ({ ...prev, error: errorMessage, loading: false }))
-
-      toast({
-        title: "Login failed",
-        description: errorMessage,
-        variant: "destructive"
-      })
+      console.error('Login failed:', errorMessage)
 
       throw error
     }
@@ -110,48 +84,11 @@ export function useAuth() {
 
       const result = await signInWithPopup(auth, googleProvider)
 
-      toast({
-        title: "Login successful",
-        description: "Welcome to Repo Scout!"
-      })
-
       return result.user
     } catch (error: any) {
       const errorMessage = error.message || 'Failed to login with Google'
       setAuthState(prev => ({ ...prev, error: errorMessage, loading: false }))
-
-      toast({
-        title: "Google login failed",
-        description: errorMessage,
-        variant: "destructive"
-      })
-
-      throw error
-    }
-  }, [])
-
-  // GitHub OAuth login
-  const loginWithGithub = useCallback(async () => {
-    try {
-      setAuthState(prev => ({ ...prev, loading: true, error: null }))
-
-      const result = await signInWithPopup(auth, githubProvider)
-
-      toast({
-        title: "Login successful",
-        description: "Welcome to Repo Scout!"
-      })
-
-      return result.user
-    } catch (error: any) {
-      const errorMessage = error.message || 'Failed to login with GitHub'
-      setAuthState(prev => ({ ...prev, error: errorMessage, loading: false }))
-
-      toast({
-        title: "GitHub login failed",
-        description: errorMessage,
-        variant: "destructive"
-      })
+      console.error('Google login failed:', errorMessage)
 
       throw error
     }
@@ -164,19 +101,10 @@ export function useAuth() {
 
       await sendPasswordResetEmail(auth, email)
 
-      toast({
-        title: "Password reset email sent",
-        description: "Check your email for password reset instructions"
-      })
     } catch (error: any) {
       const errorMessage = error.message || 'Failed to send password reset email'
       setAuthState(prev => ({ ...prev, error: errorMessage, loading: false }))
-
-      toast({
-        title: "Password reset failed",
-        description: errorMessage,
-        variant: "destructive"
-      })
+      console.error('Password reset failed:', errorMessage)
 
       throw error
     }
@@ -186,19 +114,9 @@ export function useAuth() {
   const logout = useCallback(async () => {
     try {
       await signOut(auth)
-
-      toast({
-        title: "Logged out successfully",
-        description: "See you again soon!"
-      })
     } catch (error: any) {
       const errorMessage = error.message || 'Failed to logout'
-
-      toast({
-        title: "Logout failed",
-        description: errorMessage,
-        variant: "destructive"
-      })
+      console.error('Logout failed:', errorMessage)
 
       throw error
     }
@@ -211,7 +129,6 @@ export function useAuth() {
     signup,
     login,
     loginWithGoogle,
-    loginWithGithub,
     resetPassword,
     logout
   }

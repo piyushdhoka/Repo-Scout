@@ -1,28 +1,71 @@
-const GITHUB_API_BASE = import.meta.env.VITE_API_URL || 'https://api.github.com';
-const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN; // Load from environment variables using Vite's import.meta.env
-const USE_PROXY = import.meta.env.VITE_USE_PROXY === 'true' || true; // Prefer backend proxy by default for CORS/rate limiting
+// Use proxy in production, direct API in development
+const GITHUB_API_BASE = import.meta.env.PROD ? '/api/github' : 'https://api.github.com';
+const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN;
 
-async function fetchWithFallback(primaryUrl: string, secondaryUrl: string | null, headers: Record<string, string>) {
-  try {
-    const res = await fetch(primaryUrl, { headers });
-    if (res.ok) return res;
-    if (secondaryUrl) {
-      const res2 = await fetch(secondaryUrl, { headers });
-      if (res2.ok) return res2;
-      return res2; // return last response (error)
-    }
-    return res; // return primary response (error)
-  } catch (_) {
-    if (secondaryUrl) {
-      try {
-        const res2 = await fetch(secondaryUrl, { headers });
-        return res2;
-      } catch (e2) {
-        throw e2;
-      }
-    }
-    throw _;
+// Rate limit tracking
+let rateLimitRemaining: number | null = null;
+let rateLimitReset: number | null = null;
+
+// Simple in-memory cache
+const cache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+function getCachedData(key: string): any | null {
+  const cached = cache.get(key);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return cached.data;
   }
+  cache.delete(key);
+  return null;
+}
+
+function setCachedData(key: string, data: any): void {
+  cache.set(key, { data, timestamp: Date.now() });
+  // Clean old entries if cache gets too large
+  if (cache.size > 100) {
+    const firstKey = cache.keys().next().value;
+    if (firstKey) cache.delete(firstKey);
+  }
+}
+
+async function fetchWithRetry(
+  url: string, 
+  headers: Record<string, string>, 
+  retries = 2
+): Promise<Response> {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const res = await fetch(url, { headers });
+      
+      // Track rate limits
+      const remaining = res.headers.get('x-ratelimit-remaining');
+      const reset = res.headers.get('x-ratelimit-reset');
+      if (remaining) rateLimitRemaining = parseInt(remaining);
+      if (reset) rateLimitReset = parseInt(reset);
+      
+      if (res.ok) return res;
+      
+      // Rate limited - wait if we have retries left
+      if (res.status === 403 && remaining === '0' && i < retries) {
+        const waitTime = reset ? (parseInt(reset) * 1000 - Date.now()) : 60000;
+        console.warn(`Rate limited. Waiting ${Math.ceil(waitTime / 1000)}s...`);
+        await new Promise(resolve => setTimeout(resolve, Math.min(waitTime, 60000)));
+        continue;
+      }
+      
+      // Other errors - exponential backoff
+      if (res.status >= 500 && i < retries) {
+        await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, i)));
+        continue;
+      }
+      
+      return res;
+    } catch (error) {
+      if (i === retries) throw error;
+      await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, i)));
+    }
+  }
+  throw new Error('Max retries exceeded');
 }
 
 export interface GitHubIssue {
@@ -57,95 +100,13 @@ export interface ProcessedIssue {
   author: string;
   createdAt: string;
   comments: number;
-  prTemplate?: string;
-  contributingGuide?: string;
 }
-
-export interface RepoTemplates {
-  prTemplate?: string;
-  contributingGuide?: string;
-}
-
-export const fetchRepoTemplates = async (repoFullName: string): Promise<RepoTemplates> => {
-  const templates: RepoTemplates = {};
-  
-  // Try to fetch PR template from common locations
-  const prTemplatePaths = [
-    '.github/pull_request_template.md',
-    '.github/PULL_REQUEST_TEMPLATE.md',
-    'pull_request_template.md',
-    'PULL_REQUEST_TEMPLATE.md'
-  ];
-  
-  for (const path of prTemplatePaths) {
-    try {
-      const urlProxy = `/api/github/repos/${repoFullName}/contents/${path}`;
-      const urlDirect = `${GITHUB_API_BASE}/repos/${repoFullName}/contents/${path}`;
-      
-      const headers: Record<string, string> = {
-        'Accept': 'application/vnd.github.v3+json'
-      };
-      
-      if (!USE_PROXY && GITHUB_TOKEN) {
-        headers['Authorization'] = `Bearer ${GITHUB_TOKEN}`;
-      }
-      
-      const response = await fetchWithFallback(USE_PROXY ? urlProxy : urlDirect, USE_PROXY ? urlDirect : urlProxy, headers);
-      
-      if (response.ok) {
-        const data = await response.json();
-        if (data.content) {
-          templates.prTemplate = atob(data.content);
-          break;
-        }
-      }
-    } catch (error) {
-      // Continue trying other paths
-    }
-  }
-  
-  // Try to fetch CONTRIBUTING guide
-  const contributingPaths = [
-    'CONTRIBUTING.md',
-    '.github/CONTRIBUTING.md',
-    'docs/CONTRIBUTING.md'
-  ];
-  
-  for (const path of contributingPaths) {
-    try {
-      const urlProxy = `/api/github/repos/${repoFullName}/contents/${path}`;
-      const urlDirect = `${GITHUB_API_BASE}/repos/${repoFullName}/contents/${path}`;
-      
-      const headers: Record<string, string> = {
-        'Accept': 'application/vnd.github.v3+json'
-      };
-      
-      if (!USE_PROXY && GITHUB_TOKEN) {
-        headers['Authorization'] = `Bearer ${GITHUB_TOKEN}`;
-      }
-      
-      const response = await fetchWithFallback(USE_PROXY ? urlProxy : urlDirect, USE_PROXY ? urlDirect : urlProxy, headers);
-      
-      if (response.ok) {
-        const data = await response.json();
-        if (data.content) {
-          templates.contributingGuide = atob(data.content);
-          break;
-        }
-      }
-    } catch (error) {
-      // Continue trying other paths
-    }
-  }
-  
-  return templates;
-};
 
 export const searchGitHubIssues = async (
   language?: string,
   labels?: string[],
   query?: string,
-  perPage: number = 100,
+  perPage: number = 30,
   page: number = 1,
   organization?: string
 ): Promise<ProcessedIssue[]> => {
@@ -171,10 +132,17 @@ export const searchGitHubIssues = async (
       searchQuery += ` ${query.trim()}`;
     }
 
+    // Create cache key
+    const cacheKey = `issues_${searchQuery}_${perPage}_${page}`;
+    const cached = getCachedData(cacheKey);
+    if (cached) {
+      console.log('Using cached issues data');
+      return cached;
+    }
+
     // Sort by created date (newest first)
     const endpoint = `search/issues?q=${encodeURIComponent(searchQuery)}&sort=created&order=desc&per_page=${perPage}&page=${page}`;
-    const urlProxy = `/api/github/${endpoint}`;
-    const urlDirect = `${GITHUB_API_BASE}/${endpoint}`;
+    const url = `${GITHUB_API_BASE}/${endpoint}`;
     
     console.log('Searching GitHub with query:', searchQuery);
     
@@ -182,77 +150,58 @@ export const searchGitHubIssues = async (
       'Accept': 'application/vnd.github.v3+json',
       'X-GitHub-Api-Version': '2022-11-28'
     };
-    
-    if (!USE_PROXY && GITHUB_TOKEN) {
-      headers['Authorization'] = `Bearer ${GITHUB_TOKEN}`;
+
+    // Add token in development
+    if (!import.meta.env.PROD && GITHUB_TOKEN) {
+      headers['Authorization'] = `token ${GITHUB_TOKEN}`;
     }
     
-    const response = await fetchWithFallback(USE_PROXY ? urlProxy : urlDirect, USE_PROXY ? urlDirect : urlProxy, headers);
+    const response = await fetchWithRetry(url, headers);
 
     if (!response.ok) {
-      throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+      const errorText = await response.text();
+      throw new Error(`GitHub API error: ${response.status} ${response.statusText} - ${errorText}`);
     }
 
     const data: SearchIssuesResponse = await response.json();
     
-    console.log(`Found ${data.total_count} issues`);
+    console.log(`Found ${data.total_count} issues (showing ${data.items.length})`);
 
-    // Process the issues with templates
-    const processedIssues: ProcessedIssue[] = await Promise.all(
-      data.items.map(async (issue) => {
-        // Extract repo name from repository_url
-        const repoName = issue.repository_url.replace('https://api.github.com/repos/', '');
-        
-        // Get repository details to fetch the language
-        let repoLanguage = 'Unknown';
-        try {
-          const repoUrlProxy = `/api/github/repos/${repoName}`;
-          const repoUrlDirect = issue.repository_url;
-            
-          const headers: Record<string, string> = {
-            'Accept': 'application/vnd.github.v3+json'
-          };
-          
-          if (!USE_PROXY && GITHUB_TOKEN) {
-            headers['Authorization'] = `Bearer ${GITHUB_TOKEN}`;
-          }
-          
-          const repoResponse = await fetchWithFallback(USE_PROXY ? repoUrlProxy : repoUrlDirect, USE_PROXY ? repoUrlDirect : repoUrlProxy, headers);
-          
-          if (repoResponse.ok) {
-            const repoData = await repoResponse.json();
-            repoLanguage = repoData.language || 'Unknown';
-          }
-        } catch (error) {
-          console.warn('Failed to fetch repo language:', error);
-        }
+    const processedIssues: ProcessedIssue[] = data.items.map((issue) => {
+      const repoName = issue.repository_url.replace('https://api.github.com/repos/', '');
+      
+      return {
+        title: issue.title,
+        repo: repoName,
+        labels: issue.labels.map(label => label.name),
+        language: language || 'Unknown', // Use search language or Unknown
+        url: issue.html_url,
+        author: issue.user.login,
+        createdAt: issue.created_at,
+        comments: issue.comments,
+        // Templates removed - too many API calls
+        prTemplate: undefined,
+        contributingGuide: undefined
+      };
+    });
 
-        // Fetch repository templates
-        let templates: RepoTemplates = {};
-        try {
-          templates = await fetchRepoTemplates(repoName);
-        } catch (error) {
-          console.warn('Failed to fetch repo templates:', error);
-        }
-
-        return {
-          title: issue.title,
-          repo: repoName,
-          labels: issue.labels.map(label => label.name),
-          language: repoLanguage,
-          url: issue.html_url,
-          author: issue.user.login,
-          createdAt: issue.created_at,
-          comments: issue.comments,
-          prTemplate: templates.prTemplate,
-          contributingGuide: templates.contributingGuide
-        };
-      })
-    );
+    // Cache the results
+    setCachedData(cacheKey, processedIssues);
 
     return processedIssues;
   } catch (error) {
     console.error('Error searching GitHub issues:', error);
     throw error;
   }
+};
+
+// Export rate limit info
+export const getRateLimitInfo = () => ({
+  remaining: rateLimitRemaining,
+  reset: rateLimitReset ? new Date(rateLimitReset * 1000) : null
+});
+
+// Clear cache utility
+export const clearCache = () => {
+  cache.clear();
 };

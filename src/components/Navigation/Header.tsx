@@ -97,23 +97,23 @@ export function Header() {
               alt="Repo Scout logo"
               className="h-8 w-8 rounded-full object-cover shadow-sm"
             />
-            <span className="text-xl font-bold text-white font-instrument">Repo Scout</span>
+            <span className="text-lg sm:text-xl font-bold text-white font-instrument">Repo Scout</span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6 font-instrument">
-            {isActivePath('/search') && (
+            {user && (
               <Link
-                to="/"
+                to="/home"
                 className="text-gray-300 hover:text-white transition-colors"
               >
-                Home
+                Search
               </Link>
             )}
           </nav>
 
           {/* Desktop Auth */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-2 lg:gap-4">
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -142,7 +142,7 @@ export function Header() {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator className="bg-gray-800" />
                   <DropdownMenuItem
-                    onClick={() => navigate('/search')}
+                    onClick={() => navigate('/home')}
                     className="text-gray-300 hover:text-white focus:text-white focus:bg-gray-800"
                   >
                     <Search className="mr-2 h-4 w-4" />
@@ -171,21 +171,12 @@ export function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <>
-                <Button
-                  variant="outline"
-                  onClick={() => navigate('/auth')}
-                  className="border-gray-700 bg-gray-900 text-white hover:bg-gray-800"
-                >
-                  Sign In
-                </Button>
-                <Button
-                  onClick={() => navigate('/auth')}
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
-                >
-                  Get Started
-                </Button>
-              </>
+              <Button
+                onClick={() => navigate('/auth')}
+                className="bg-blue-600 hover:bg-blue-700 text-white text-sm auth-button"
+              >
+                Get Started
+              </Button>
             )}
           </div>
 
@@ -218,13 +209,13 @@ export function Header() {
                 </div>
 
                 <nav className="flex-1 space-y-4">
-                  {isActivePath('/search') && (
+                  {user && (
                     <Link
-                      to="/"
+                      to="/home"
                       onClick={() => setIsMobileMenuOpen(false)}
                       className="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-900 rounded-lg transition-colors"
                     >
-                      Home
+                      Search
                     </Link>
                   )}
                 </nav>
@@ -253,13 +244,13 @@ export function Header() {
                         <Button
                           variant="ghost"
                           onClick={() => {
-                            navigate('/search')
+                            navigate('/home')
                             setIsMobileMenuOpen(false)
                           }}
                           className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-900"
                         >
                           <Search className="mr-2 h-4 w-4" />
-                          Search Issues
+                          Search Repositories
                         </Button>
                         <Button
                           variant="ghost"
@@ -286,27 +277,15 @@ export function Header() {
                       </div>
                     </>
                   ) : (
-                    <div className="space-y-2">
-                      <Button
-                        variant="outline"
-                        onClick={() => {
-                          navigate('/auth')
-                          setIsMobileMenuOpen(false)
-                        }}
-                        className="w-full border-gray-700 bg-gray-900 text-white hover:bg-gray-800"
-                      >
-                        Sign In
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          navigate('/auth')
-                          setIsMobileMenuOpen(false)
-                        }}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-                      >
-                        Get Started
-                      </Button>
-                    </div>
+                    <Button
+                      onClick={() => {
+                        navigate('/auth')
+                        setIsMobileMenuOpen(false)
+                      }}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      Get Started
+                    </Button>
                   )}
                 </div>
               </div>

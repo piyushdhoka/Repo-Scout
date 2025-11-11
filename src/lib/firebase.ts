@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getAuth, GoogleAuthProvider, GithubAuthProvider } from 'firebase/auth'
+import { getAuth, GoogleAuthProvider } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
@@ -19,17 +19,12 @@ const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 export const db = getFirestore(app)
 
-// Initialize OAuth providers
+// Initialize OAuth provider
 export const googleProvider = new GoogleAuthProvider()
-export const githubProvider = new GithubAuthProvider()
 
-// Configure OAuth providers
+// Configure OAuth provider
 googleProvider.setCustomParameters({
   prompt: 'select_account'
-})
-
-githubProvider.setCustomParameters({
-  allow_signup: 'true'
 })
 
 export default app

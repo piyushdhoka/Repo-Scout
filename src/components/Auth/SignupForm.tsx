@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Checkbox } from '@/components/ui/checkbox'
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/hooks/useAuth'
 import { Loader2, Mail, Github, CheckCircle2, XCircle } from 'lucide-react'
@@ -81,7 +80,7 @@ function getPasswordStrength(password: string): PasswordStrength {
 export function SignupForm({ onTabChange }: SignupFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const { signup, loginWithGoogle, loginWithGithub } = useAuth()
+  const { signup, loginWithGoogle } = useAuth()
 
   const {
     register,
@@ -121,18 +120,6 @@ export function SignupForm({ onTabChange }: SignupFormProps) {
     }
   }
 
-  const handleGithubSignup = async () => {
-    try {
-      setIsLoading(true)
-      await loginWithGithub()
-    } catch (error: any) {
-      // Error is already handled by useAuth hook
-      console.error('GitHub signup error:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   return (
     <Card className="w-full max-w-md border-gray-800 bg-black">
       <CardHeader className="space-y-1">
@@ -142,7 +129,7 @@ export function SignupForm({ onTabChange }: SignupFormProps) {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3">
           <Button
             variant="outline"
             onClick={handleGoogleSignup}
@@ -155,19 +142,6 @@ export function SignupForm({ onTabChange }: SignupFormProps) {
               <Mail className="h-4 w-4 mr-2" />
             )}
             Google
-          </Button>
-          <Button
-            variant="outline"
-            onClick={handleGithubSignup}
-            disabled={isLoading}
-            className="border-gray-700 bg-gray-900 text-white hover:bg-gray-800"
-          >
-            {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Github className="h-4 w-4 mr-2" />
-            )}
-            GitHub
           </Button>
         </div>
 
@@ -265,10 +239,11 @@ export function SignupForm({ onTabChange }: SignupFormProps) {
           </div>
 
           <div className="flex items-center space-x-2">
-            <Checkbox
+            <input
               id="terms"
+              type="checkbox"
               {...register('terms')}
-              className="border-gray-600 data-[state=checked]:bg-blue-600"
+              className="h-4 w-4 rounded border-gray-600 bg-gray-800 text-blue-600"
               disabled={isLoading}
             />
             <Label

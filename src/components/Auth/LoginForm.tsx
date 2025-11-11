@@ -3,13 +3,11 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/hooks/useAuth'
-import { InteractiveButton } from '@/components/ui/InteractiveButton'
-import { InteractiveInput } from '@/components/ui/InteractiveInput'
 import { Loader2, Mail, Github, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react'
 
 const loginSchema = z.object({
@@ -26,7 +24,8 @@ interface LoginFormProps {
 export function LoginForm({ onTabChange }: LoginFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [loginSuccess, setLoginSuccess] = useState(false)
-  const { login, loginWithGoogle, loginWithGithub } = useAuth()
+  const [showPassword, setShowPassword] = useState(false)
+  const { login, loginWithGoogle } = useAuth()
 
   const {
     register,
@@ -63,18 +62,6 @@ export function LoginForm({ onTabChange }: LoginFormProps) {
     }
   }
 
-  const handleGithubLogin = async () => {
-    try {
-      setIsLoading(true)
-      await loginWithGithub()
-    } catch (error: any) {
-      // Error is already handled by useAuth hook
-      console.error('GitHub login error:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   return (
     <Card className="w-full max-w-md border-gray-800 bg-black">
       <CardHeader className="space-y-1">
@@ -84,7 +71,7 @@ export function LoginForm({ onTabChange }: LoginFormProps) {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3">
           <Button
             variant="outline"
             onClick={handleGoogleLogin}
@@ -97,19 +84,6 @@ export function LoginForm({ onTabChange }: LoginFormProps) {
               <Mail className="h-4 w-4 mr-2" />
             )}
             Google
-          </Button>
-          <Button
-            variant="outline"
-            onClick={handleGithubLogin}
-            disabled={isLoading}
-            className="border-gray-700 bg-gray-900 text-white hover:bg-gray-800"
-          >
-            {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Github className="h-4 w-4 mr-2" />
-            )}
-            GitHub
           </Button>
         </div>
 
@@ -124,61 +98,47 @@ export function LoginForm({ onTabChange }: LoginFormProps) {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
-            <InteractiveInput
-              id="email"
-              type="email"
-              label="Email Address"
-              placeholder="Enter your email address"
-              leftIcon={<Mail className="h-4 w-4" />}
-              error={errors.email?.message}
-              helperText="We'll never share your email with anyone else."
-              validateOnBlur={(value) => {
-                if (!value) return 'Email is required'
-                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-                  return 'Please enter a valid email address'
-                }
-                return null
-              }}
-              disabled={isLoading}
-              className="w-full"
-              {...register('email')}
-            />
+            <div className="space-y-2">
+              <Label htmlFor="email">Email Address</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter your email address"
+                disabled={isLoading}
+                className="w-full"
+                {...register('email')}
+              />
+              {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
+            </div>
 
-            <InteractiveInput
-              id="password"
-              type="password"
-              label="Password"
-              placeholder="Enter your password"
-              leftIcon={<AlertCircle className="h-4 w-4" />}
-              showPasswordToggle
-              showClearButton
-              error={errors.password?.message}
-              helperText="Must be at least 6 characters long."
-              validateOnBlur={(value) => {
-                if (!value) return 'Password is required'
-                if (value.length < 6) {
-                  return 'Password must be at least 6 characters'
-                }
-                return null
-              }}
-              disabled={isLoading}
-              className="w-full"
-              {...register('password')}
-            />
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+                disabled={isLoading}
+                className="w-full"
+                {...register('password')}
+              />
+              {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
+            </div>
           </div>
 
-          <InteractiveButton
+          <Button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-            loading={isLoading || isSubmitting}
-            success={loginSuccess}
-            successMessage="Welcome back!"
-            glow
-            ripple
             disabled={isLoading || isSubmitting}
           >
-            Sign In to Your Account
-          </InteractiveButton>
+            {isLoading || isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Signing in...
+              </>
+            ) : (
+              'Sign In to Your Account'
+            )}
+          </Button>
         </form>
       </CardContent>
       <CardFooter className="flex flex-col space-y-2">

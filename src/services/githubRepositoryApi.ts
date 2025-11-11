@@ -36,39 +36,73 @@ interface GitHubSearchResponse {
   items: GitHubRepository[]
 }
 
+// Simple in-memory cache
+const repoCache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+function getCachedRepoData(key: string): any | null {
+  const cached = repoCache.get(key);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return cached.data;
+  }
+  repoCache.delete(key);
+  return null;
+}
+
+function setCachedRepoData(key: string, data: any): void {
+  repoCache.set(key, { data, timestamp: Date.now() });
+  if (repoCache.size > 50) {
+    const firstKey = repoCache.keys().next().value;
+    if (firstKey) repoCache.delete(firstKey);
+  }
+}
+
 class GitHubRepositoryAPI {
-  private readonly BASE_URL = 'https://api.github.com'
-  private readonly TOKEN = import.meta.env.VITE_GITHUB_API_KEY
+  // Use proxy in production, direct API in development
+  private readonly BASE_URL = import.meta.env.PROD ? '/api/github' : 'https://api.github.com'
+  private readonly GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN
+  private rateLimitRemaining: number | null = null
+  private rateLimitReset: number | null = null
 
   private async fetchFromGitHub(endpoint: string): Promise<any> {
     const headers: HeadersInit = {
       'Accept': 'application/vnd.github.v3+json',
     }
 
-    if (this.TOKEN) {
-      headers['Authorization'] = `token ${this.TOKEN}`
+    // Add token in development
+    if (!import.meta.env.PROD && this.GITHUB_TOKEN) {
+      headers['Authorization'] = `token ${this.GITHUB_TOKEN}`
     }
 
     try {
       const response = await fetch(`${this.BASE_URL}${endpoint}`, {
         headers,
-        cache: 'no-store'
       })
 
+      // Track rate limits
+      const remaining = response.headers.get('x-ratelimit-remaining');
+      const reset = response.headers.get('x-ratelimit-reset');
+      if (remaining) this.rateLimitRemaining = parseInt(remaining);
+      if (reset) this.rateLimitReset = parseInt(reset);
+
       if (!response.ok) {
-        if (response.status === 403) {
-          throw new Error('GitHub API rate limit exceeded. Please try again later.')
+        if (response.status === 403 && this.rateLimitRemaining === 0) {
+          const resetDate = this.rateLimitReset ? new Date(this.rateLimitReset * 1000).toLocaleTimeString() : 'unknown';
+          throw new Error(`GitHub API rate limit exceeded. Resets at ${resetDate}`);
         }
         if (response.status === 401) {
-          throw new Error('Invalid GitHub API token.')
+          throw new Error('Invalid GitHub API token.');
         }
-        throw new Error(`GitHub API error: ${response.status} ${response.statusText}`)
+        if (response.status === 422) {
+          throw new Error('Invalid search query. Try simplifying your search.');
+        }
+        throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
       }
 
-      return await response.json()
+      return await response.json();
     } catch (error) {
-      console.error('GitHub API Error:', error)
-      throw error
+      console.error('GitHub API Error:', error);
+      throw error;
     }
   }
 
@@ -89,11 +123,19 @@ class GitHubRepositoryAPI {
     perPage?: number
     page?: number
   } = {}): Promise<GitHubRepository[]> {
-    // Build search query
+    // Check cache first
+    const cacheKey = `repos_${query}_${language}_${stars}_${sort}_${perPage}_${page}`;
+    const cached = getCachedRepoData(cacheKey);
+    if (cached) {
+      console.log('Using cached repository data');
+      return cached;
+    }
+
+    // Build search query - simplified to avoid 422 errors
     const searchQueries: string[] = []
 
     if (query) {
-      searchQueries.push(`${query} in:name,description`)
+      searchQueries.push(query)
     }
 
     if (language) {
@@ -102,17 +144,14 @@ class GitHubRepositoryAPI {
 
     if (stars) {
       searchQueries.push(`stars:>${stars}`)
+    } else {
+      // Default quality filter
+      searchQueries.push('stars:>10')
     }
 
-    // Add quality filters - use simpler query to avoid 422 errors
-    // Only add basic filters to keep query length manageable
+    // Only add pushed filter if no specific query
     if (!query && !language) {
-      // Default trending query: just show popular repos
-      searchQueries.push('stars:>1000')
       searchQueries.push('pushed:>2023-01-01')
-    } else {
-      // For user searches, just add a star filter for quality
-      searchQueries.push('stars:>10')
     }
 
     const finalQuery = searchQueries.join(' ')
@@ -121,15 +160,24 @@ class GitHubRepositoryAPI {
       q: finalQuery,
       sort,
       order,
-      per_page: perPage.toString(),
+      per_page: Math.min(perPage, 30).toString(), // Limit to 30 to reduce API load
       page: page.toString()
     })
 
-    const response: GitHubSearchResponse = await this.fetchFromGitHub(
-      `/search/repositories?${params}`
-    )
+    try {
+      const response: GitHubSearchResponse = await this.fetchFromGitHub(
+        `/search/repositories?${params}`
+      )
 
-    return response.items
+      // Cache the results
+      setCachedRepoData(cacheKey, response.items);
+
+      return response.items
+    } catch (error) {
+      // Return empty array on error to avoid breaking UI
+      console.error('Repository search failed:', error);
+      return [];
+    }
   }
 
   async getRepository(owner: string, repo: string): Promise<GitHubRepository> {
