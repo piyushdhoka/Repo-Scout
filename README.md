@@ -1,5 +1,6 @@
 # Repo Scout
 
+
 A web app to discover and contribute to open source projects by finding GitHub issues that match your skills and interests. Features powerful search and filtering tools to help you get started with open source contributions.
 
 ## Features
