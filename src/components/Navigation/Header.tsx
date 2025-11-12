@@ -39,6 +39,23 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  useEffect(() => {
+    const fetchStarCount = async () => {
+      try {
+        const count = await getStarCount('piyushdhokas', 'Repo-Scout')
+        setStarCount(count)
+      } catch (error) {
+        console.error('Failed to fetch star count:', error)
+        setStarCount(220) // Fallback
+      }
+    }
+
+    fetchStarCount()
+    // Refresh star count every 5 minutes
+    const interval = setInterval(fetchStarCount, 5 * 60 * 1000)
+    return () => clearInterval(interval)
+  }, [])
+
   const handleLogout = async () => {
     try {
       await logout()
