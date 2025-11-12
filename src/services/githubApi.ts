@@ -102,6 +102,13 @@ export interface ProcessedIssue {
   comments: number;
 }
 
+export interface GitHubRepoData {
+  stargazers_count: number;
+  name: string;
+  full_name: string;
+  html_url: string;
+}
+
 export const searchGitHubIssues = async (
   language?: string,
   labels?: string[],
