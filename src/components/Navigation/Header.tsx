@@ -23,7 +23,7 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const { user, logout } = useAuth()
-  const { toggleSidebar } = useSidebar()
+  const { isOpen, toggleSidebar } = useSidebar()
   const navigate = useNavigate()
   const location = useLocation()
 
