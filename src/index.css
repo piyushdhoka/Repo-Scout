@@ -132,6 +132,28 @@
     outline-offset: 2px;
     transition: all 0.2s ease-in-out;
   }
+
+  /* Global image optimization - lazy loading and smooth transitions */
+  img {
+    /* Enable native lazy loading for all images */
+    loading: lazy;
+    /* Async decoding for better performance */
+    decoding: async;
+    /* Smooth fade-in effect */
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  /* Show images once loaded */
+  img.loaded,
+  img[complete] {
+    opacity: 1;
+  }
+
+  /* Prevent layout shift while images load */
+  img[width][height] {
+    height: auto;
+  }
 }
 
 @layer utilities {

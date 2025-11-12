@@ -47,9 +47,14 @@
   <link rel="apple-touch-icon" href="/repo_logo.png" />
     <link rel="manifest" href="/site.webmanifest" />
 
+  <!-- Preload critical images for instant rendering -->
+  <link rel="preload" as="image" href="/repo_logo.png" />
+  <link rel="preload" as="image" href="/favicon.ico" />
+
   <!-- Preconnect for performance -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://api.github.com" />
   <!-- Instrument Serif font for headings and navbar -->
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
