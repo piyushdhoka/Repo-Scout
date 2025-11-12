@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Search, Code, TrendingUp, ChevronDown } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useSidebar } from "@/contexts/SidebarContext";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { githubRepositoryAPI, GitHubRepository } from "@/services/githubRepositoryApi";
 import { RepositoryTable } from "@/components/RepositoryTable";
