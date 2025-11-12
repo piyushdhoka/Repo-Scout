@@ -63,7 +63,7 @@ const SearchPage = () => {
   };
 
   return (
-    <div className={`min-h-screen bg-black transition-all duration-300 ${isOpen ? 'lg:ml-80' : ''}`}>
+    <div className={`min-h-screen bg-black transition-all duration-300 ease-in-out ${isOpen ? 'lg:ml-80' : 'lg:ml-0'}`}>
       {/* Hero Section with Search */}
       <div className="border-b border-gray-900 px-6 py-8 bg-gradient-to-b from-gray-950 to-black">
         <div className="max-w-7xl mx-auto">
