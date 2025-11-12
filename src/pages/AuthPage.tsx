@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 import { IconBrandGoogle } from '@tabler/icons-react'
 import { Loader2 } from 'lucide-react'
+import { SEO } from '@/components/SEO'
 
 const BottomGradient = () => {
   return (
@@ -34,6 +35,12 @@ export function AuthPage() {
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <SEO 
+        title="Sign In"
+        description="Sign in to Repo Scout to discover amazing open source projects and start making meaningful contributions to the community."
+        keywords="sign in, login, GitHub authentication, open source login"
+      />
+      
       <div className="shadow-input mx-auto w-full max-w-md rounded-2xl bg-black p-8 border border-gray-800">
         {/* Logo and Title */}
         <div className="flex items-center justify-center gap-3 mb-4">

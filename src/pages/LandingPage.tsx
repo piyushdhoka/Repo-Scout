@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { DashboardPreview } from '@/components/Landing/DashboardPreview'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useScrollAnimation } from '@/hooks/useScrollAnimations'
+import { SEO } from '@/components/SEO'
 import {
   Search,
   Zap,
@@ -60,6 +61,10 @@ export function LandingPage() {
   return (
     // keep space for the global sticky header
     <div className="min-h-screen pt-16 bg-black text-white">
+      <SEO 
+        description="Discover curated GitHub issues from Y Combinator startups and top open source projects. Find your next meaningful contribution with Repo Scout's advanced search and filtering."
+        keywords="GitHub issues, open source, contributions, Y Combinator, startups, programming, development, good first issues, beginner friendly"
+      />
 
       {/* Hero Section */}
       <section ref={heroRef} className={`hero-section relative py-20 px-4 ${heroAnimation}`}>

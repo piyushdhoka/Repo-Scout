@@ -81,7 +81,12 @@ export function NavigationSidebar() {
 
           <Button
             variant="ghost"
-            onClick={() => handleNavigation('/suggest')}
+            onClick={() => {
+              const tweetText = "Hey @piyuhs_dhoka27! 👋 I have a feature suggestion for Repo Scout that could make it even better. Here's my idea:";
+              const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+              window.open(tweetUrl, '_blank', 'noopener,noreferrer');
+              closeSidebar();
+            }}
             className="w-full justify-start gap-4 px-4 py-3 text-gray-300 hover:text-white hover:bg-gray-900 rounded-lg transition-all duration-200 hover:translate-x-1"
           >
             <Lightbulb className="h-5 w-5 flex-shrink-0" />

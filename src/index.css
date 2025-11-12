@@ -98,6 +98,40 @@
   body {
     @apply bg-background text-foreground font-sans;
   }
+
+  /* Global button styles for consistent contrast */
+  button {
+    transition: all 0.2s ease-in-out;
+  }
+
+  /* Ensure light buttons darken on hover with proper text contrast */
+  button[class*="bg-white"]:hover,
+  button[class*="bg-gray-50"]:hover,
+  button[class*="bg-gray-100"]:hover {
+    background-color: #f3f4f6 !important;
+    color: #111827 !important;
+  }
+
+  /* Ensure dark buttons lighten on hover with proper text contrast */
+  button[class*="bg-gray-900"]:hover,
+  button[class*="bg-black"]:hover {
+    background-color: #374151 !important;
+    color: #ffffff !important;
+  }
+
+  /* Medium gray buttons */
+  button[class*="bg-gray-700"]:hover,
+  button[class*="bg-gray-800"]:hover {
+    background-color: #4b5563 !important;
+    color: #ffffff !important;
+  }
+
+  /* Ensure focus states also have proper contrast */
+  button:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    transition: all 0.2s ease-in-out;
+  }
 }
 
 @layer utilities {

@@ -6,8 +6,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { useSidebar } from "@/contexts/SidebarContext";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { githubRepositoryAPI, GitHubRepository } from "@/services/githubRepositoryApi";
-import { RepositoryTable } from "@/components/RepositoryTable";
-import { RepositoryTableSkeleton } from "@/components/RepositoryTableSkeleton";
+import { RepositoryTable } from "@/components/ui/RepositoryTable";
+import { RepositoryTableSkeleton } from "@/components/ui/RepositoryTableSkeleton";
+import { SEO } from "@/components/SEO";
 
 const SearchPage = () => {
   const { user } = useAuth();
@@ -64,6 +65,12 @@ const SearchPage = () => {
 
   return (
     <div className={`min-h-screen bg-black transition-all duration-300 ease-in-out ${isOpen ? 'lg:ml-80' : 'lg:ml-0'}`}>
+      <SEO 
+        title="Search Repositories"
+        description="Search and discover trending GitHub repositories across multiple programming languages. Find open source projects to contribute to or learn from."
+        keywords="GitHub search, repository search, trending repos, open source projects, programming languages, code search"
+      />
+      
       {/* Hero Section with Search */}
       <div className="border-b border-gray-900 px-6 py-8 bg-gradient-to-b from-gray-950 to-black">
         <div className="max-w-7xl mx-auto">
