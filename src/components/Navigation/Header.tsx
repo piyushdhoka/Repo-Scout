@@ -86,17 +86,32 @@ export function Header() {
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <img
-              src="/repo_logo.png"
-              alt="Repo Scout logo"
-              className="h-8 w-8 rounded-full object-cover shadow-sm"
-            />
-            <span className="text-lg sm:text-xl font-bold text-white font-instrument">Repo Scout</span>
-          </Link>
+          {/* Left side - Logo and Hamburger */}
+          <div className="flex items-center gap-4">
+            {/* Desktop Sidebar Toggle - Left side */}
+            {user && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleSidebar}
+                className="hidden md:flex text-gray-300 hover:text-white transition-colors"
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+            )}
 
-          {/* Desktop Navigation */}
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-2">
+              <img
+                src="/repo_logo.png"
+                alt="Repo Scout logo"
+                className="h-8 w-8 rounded-full object-cover shadow-sm"
+              />
+              <span className="text-lg sm:text-xl font-bold text-white font-instrument">Repo Scout</span>
+            </Link>
+          </div>
+
+          {/* Center - Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6 font-instrument">
             {user && (
               <Link
@@ -108,18 +123,9 @@ export function Header() {
             )}
           </nav>
 
-          {/* Desktop Sidebar Toggle */}
+          {/* Right side - Empty for desktop, Mobile menu for mobile */}
           <div className="hidden md:flex items-center gap-2 lg:gap-4">
-            {user ? (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={toggleSidebar}
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                <Menu className="h-5 w-5" />
-              </Button>
-            ) : (
+            {!user && (
               <Button
                 onClick={() => navigate('/auth')}
                 className="bg-blue-600 hover:bg-blue-700 text-white text-sm auth-button"
