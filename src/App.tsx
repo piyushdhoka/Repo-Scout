@@ -66,9 +66,10 @@ const App = () => {
                   </Routes>
                 </Suspense>
               </main>
-            </ErrorBoundary>
-          </div>
-        </BrowserRouter>
+              </ErrorBoundary>
+            </div>
+          </BrowserRouter>
+        </SidebarProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );
