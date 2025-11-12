@@ -1,6 +1,5 @@
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
-import Loader from '@/components/Loader'
 
 interface LandingGuardProps {
   children: React.ReactNode
@@ -10,11 +9,8 @@ export function LandingGuard({ children }: LandingGuardProps) {
   const { user, loading } = useAuth()
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
-        <Loader />
-      </div>
-    )
+    // No loader: render nothing while auth state resolves.
+    return null
   }
 
   // If user is logged in, redirect to home page

@@ -8,7 +8,6 @@ import { AuthGuard } from "@/components/Auth/AuthGuard";
 import { LandingGuard } from "@/components/Auth/LandingGuard";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { lazy, Suspense } from "react";
-import Loader from "@/components/Loader";
 
 // Lazy load route components for code splitting
 const LandingPage = lazy(() => import("./pages/LandingPage"));
@@ -33,11 +32,7 @@ const App = () => {
               <NavigationSidebar />
               <ErrorBoundary>
                 <main>
-                <Suspense fallback={
-                  <div className="flex items-center justify-center min-h-screen">
-                    <Loader />
-                  </div>
-                }>
+                <Suspense fallback={null}>
                   <Routes>
                     {/* Public routes - Landing page redirects logged-in users to /home */}
                     <Route path="/" element={

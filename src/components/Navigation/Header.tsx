@@ -20,6 +20,7 @@ import {
   Lightbulb,
   Star
 } from 'lucide-react'
+import { Button as MovingBorderButton } from '@/components/ui/moving-border'
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -42,7 +43,8 @@ export function Header() {
   useEffect(() => {
     const fetchStarCount = async () => {
       try {
-        const count = await getStarCount('piyushdhokas', 'Repo-Scout')
+        // Correct repo owner
+        const count = await getStarCount('piyushdhoka', 'Repo-Scout')
         setStarCount(count)
       } catch (error) {
         console.error('Failed to fetch star count:', error)
@@ -148,16 +150,22 @@ export function Header() {
           <div className="hidden md:flex items-center gap-3">
             {/* GitHub Star Button */}
             {user && (
-              <Button
-                variant="outline"
-                onClick={() => window.open('https://github.com/piyushdhokas/Repo-Scout', '_blank')}
-                className="bg-gray-900 border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white transition-all duration-200 gap-2"
+              <MovingBorderButton
+                borderRadius="0.75rem"
+                containerClassName="inline-flex h-10 w-auto px-1"
+                className="!bg-gray-900 text-gray-300 hover:!bg-gray-800 px-3 py-1 text-sm"
+                borderClassName="bg-[radial-gradient(#0ea5e9_40%,transparent_60%)]"
+                onClick={() => window.open('https://github.com/piyushdhoka/Repo-Scout', '_blank')}
+                title="View on GitHub"
               >
-                <Star className="h-4 w-4" />
-                <span className="hidden sm:inline">
-                  {starCount !== null ? `★${starCount.toLocaleString()}` : 'Star'}
+                <span className="font-semibold">Proudly Open Source</span>
+                <span className="ml-2 flex items-center gap-1 bg-gray-800/50 px-2 py-0.5 rounded">
+                  <Star className="h-4 w-4 text-yellow-300" />
+                  <span className="font-mono text-xs">
+                    {starCount !== null ? starCount.toLocaleString() : '—'}
+                  </span>
                 </span>
-              </Button>
+              </MovingBorderButton>
             )}
 
             {!user && (
@@ -272,14 +280,14 @@ export function Header() {
                         <Button
                           variant="ghost"
                           onClick={() => {
-                            window.open('https://github.com/piyushdhokas/Repo-Scout', '_blank')
+                            window.open('https://github.com/piyushdhoka/Repo-Scout', '_blank')
                             setIsMobileMenuOpen(false)
                           }}
                           className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-900"
                         >
-                          <Star className="mr-2 h-4 w-4" />
+                          <Star className="mr-2 h-4 w-4 text-yellow-300" />
                           <span>
-                            {starCount !== null ? `★${starCount.toLocaleString()} on GitHub` : 'Star on GitHub'}
+                            {starCount !== null ? `Proudly Open Source • ★${starCount.toLocaleString()}` : 'Star on GitHub'}
                           </span>
                         </Button>
                         <Button
