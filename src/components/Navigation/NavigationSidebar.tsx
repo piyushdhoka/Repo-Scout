@@ -87,6 +87,18 @@ export function NavigationSidebar() {
             <Lightbulb className="h-5 w-5 flex-shrink-0" />
             <span className="font-medium">Suggest Feature</span>
           </Button>
+
+          <Button
+            variant="ghost"
+            onClick={() => {
+              window.open('https://github.com/sponsors/piyushdhokas', '_blank')
+              closeSidebar()
+            }}
+            className="w-full justify-start gap-4 px-4 py-3 text-pink-400 hover:text-pink-300 hover:bg-pink-900/20 rounded-lg transition-all duration-200 hover:translate-x-1"
+          >
+            <Heart className="h-5 w-5 flex-shrink-0" />
+            <span className="font-medium">Sponsor</span>
+          </Button>
         </nav>
 
         {/* User Section - Fixed at bottom */}
