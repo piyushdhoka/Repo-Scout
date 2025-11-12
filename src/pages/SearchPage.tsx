@@ -11,6 +11,7 @@ import { RepositoryTableSkeleton } from "@/components/RepositoryTableSkeleton";
 
 const SearchPage = () => {
   const { user } = useAuth();
+  const { isOpen } = useSidebar();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("");
   const [repositories, setRepositories] = useState<GitHubRepository[]>([]);
