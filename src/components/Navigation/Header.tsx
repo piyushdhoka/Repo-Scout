@@ -278,7 +278,9 @@ export function Header() {
                           className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-900"
                         >
                           <Star className="mr-2 h-4 w-4" />
-                          Star on GitHub
+                          <span>
+                            {starCount !== null ? `★${starCount.toLocaleString()} on GitHub` : 'Star on GitHub'}
+                          </span>
                         </Button>
                         <Button
                           variant="ghost"
