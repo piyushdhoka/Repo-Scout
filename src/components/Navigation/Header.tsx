@@ -2,16 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { useAuth } from '@/hooks/useAuth'
+import { useSidebar } from '@/contexts/SidebarContext'
 import {
   Menu,
   X,
@@ -21,7 +14,9 @@ import {
   Settings,
   History,
   Github,
-  ChevronDown
+  Home,
+  TrendingUp,
+  Lightbulb
 } from 'lucide-react'
 
 export function Header() {
