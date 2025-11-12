@@ -322,12 +322,19 @@ body {
 /* Sidebar Styles */
 .navigation-sidebar {
   width: var(--sidebar-width);
-  transform: translateX(-100%);
-  transition: transform var(--sidebar-slide-duration) cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-lg);
 }
 
-.navigation-sidebar.open {
-  transform: translateX(0);
+/* Mobile: Hidden by default, slide in when open */
+@media (max-width: 768px) {
+  .navigation-sidebar {
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .navigation-sidebar.translate-x-0 {
+    transform: translateX(0);
+  }
 }
 
 /* Navigation Button Styles */
