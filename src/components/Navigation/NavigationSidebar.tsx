@@ -103,9 +103,9 @@ export function NavigationSidebar() {
 
         {/* User Section - Fixed at bottom */}
         {user && (
-          <div className="border-t border-gray-800 p-4 space-y-4">
+          <div className="border-t border-gray-800 p-6 space-y-4">
             {/* User Profile Info */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 px-2">
               <Avatar className="h-10 w-10">
                 <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
                 <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white">
@@ -126,10 +126,10 @@ export function NavigationSidebar() {
             <Button
               variant="ghost"
               onClick={handleLogout}
-              className="w-full justify-start gap-3 text-red-400 hover:text-red-300 hover:bg-red-900/20 transition-colors"
+              className="w-full justify-start gap-4 px-4 py-3 text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-all duration-200 hover:translate-x-1"
             >
-              <LogOut className="h-5 w-5" />
-              Sign Out
+              <LogOut className="h-5 w-5 flex-shrink-0" />
+              <span className="font-medium">Sign Out</span>
             </Button>
           </div>
         )}
