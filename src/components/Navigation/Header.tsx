@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { useAuth } from '@/hooks/useAuth'
 import { useSidebar } from '@/contexts/SidebarContext'
+import { getStarCount } from '@/services/githubApi'
 import {
   Menu,
   X,
