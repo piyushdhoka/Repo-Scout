@@ -26,11 +26,13 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <BrowserRouter>
-          <div className="min-h-screen bg-black">
-            <Header />
-            <ErrorBoundary>
-              <main>
+        <SidebarProvider>
+          <BrowserRouter>
+            <div className="min-h-screen bg-black">
+              <Header />
+              <NavigationSidebar />
+              <ErrorBoundary>
+                <main>
                 <Suspense fallback={
                   <div className="flex items-center justify-center min-h-screen">
                     <Loader />
