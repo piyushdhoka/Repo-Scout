@@ -16,7 +16,8 @@ import {
   Github,
   Home,
   TrendingUp,
-  Lightbulb
+  Lightbulb,
+  Star
 } from 'lucide-react'
 
 export function Header() {
