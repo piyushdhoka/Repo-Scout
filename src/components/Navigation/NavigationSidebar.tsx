@@ -9,7 +9,8 @@ import {
   Home,
   TrendingUp,
   Lightbulb,
-  LogOut
+  LogOut,
+  Heart
 } from 'lucide-react'
 
 export function NavigationSidebar() {
