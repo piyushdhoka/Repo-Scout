@@ -154,7 +154,9 @@ export function Header() {
                 className="bg-gray-900 border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white transition-all duration-200 gap-2"
               >
                 <Star className="h-4 w-4" />
-                <span className="hidden sm:inline">Star</span>
+                <span className="hidden sm:inline">
+                  {starCount !== null ? `★${starCount.toLocaleString()}` : 'Star'}
+                </span>
               </Button>
             )}
 
