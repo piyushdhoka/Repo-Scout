@@ -46,18 +46,18 @@ export function NavigationSidebar() {
     closeSidebar()
   }
 
-  if (!isOpen) return null
-
   return (
     <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
-        onClick={closeSidebar}
-      />
+      {/* Backdrop - Only show on mobile */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 lg:hidden"
+          onClick={closeSidebar}
+        />
+      )}
 
       {/* Sidebar */}
-      <div className="navigation-sidebar fixed top-16 left-0 h-[calc(100vh-4rem)] w-80 bg-black border-r border-gray-800 z-40 flex flex-col">
+      <div className={`navigation-sidebar fixed top-16 left-0 h-[calc(100vh-4rem)] w-80 bg-black border-r border-gray-800 z-40 flex flex-col transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-800">
           <h2 className="text-lg font-semibold text-white font-instrument">Navigation</h2>
