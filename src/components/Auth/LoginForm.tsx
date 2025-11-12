@@ -55,7 +55,7 @@ export function LoginForm({ onTabChange }: LoginFormProps) {
       setIsLoading(true)
       await loginWithGoogle()
     } catch (error: any) {
-      // Error is already handled by useAuth hook
+
       console.error('Google login error:', error)
     } finally {
       setIsLoading(false)

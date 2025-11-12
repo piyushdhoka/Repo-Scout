@@ -11,7 +11,6 @@ export function AuthGuard({ children, redirectTo = '/auth' }: AuthGuardProps) {
   const { user, loading } = useAuth()
 
   if (loading) {
-    // No loader: render nothing while auth state resolves.
     return null
   }
 
