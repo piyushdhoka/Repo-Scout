@@ -159,13 +159,40 @@ export function Header() {
 
                 <nav className="flex-1 space-y-4">
                   {user && (
-                    <Link
-                      to="/home"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-900 rounded-lg transition-colors"
-                    >
-                      Search
-                    </Link>
+                    <>
+                      <Link
+                        to="/"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-900 rounded-lg transition-colors"
+                      >
+                        <Home className="h-5 w-5" />
+                        Home
+                      </Link>
+                      <Link
+                        to="/home"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-900 rounded-lg transition-colors"
+                      >
+                        <Search className="h-5 w-5" />
+                        Search
+                      </Link>
+                      <Link
+                        to="/home"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-900 rounded-lg transition-colors"
+                      >
+                        <TrendingUp className="h-5 w-5" />
+                        Trending
+                      </Link>
+                      <Link
+                        to="/suggest"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-900 rounded-lg transition-colors"
+                      >
+                        <Lightbulb className="h-5 w-5" />
+                        Suggest Feature
+                      </Link>
+                    </>
                   )}
                 </nav>
 
