@@ -58,18 +58,6 @@ export function NavigationSidebar() {
 
       {/* Sidebar */}
       <div className={`navigation-sidebar fixed top-16 left-0 h-[calc(100vh-4rem)] w-80 bg-black border-r border-gray-800 z-40 flex flex-col transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        {/* Header */}
-        <div className="flex items-center justify-end p-4 border-b border-gray-800">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={closeSidebar}
-            className="text-gray-400 hover:text-white transition-colors"
-          >
-            <X className="h-5 w-5" />
-          </Button>
-        </div>
-
         {/* Navigation Section */}
         <nav className="flex-1 p-6 space-y-3">
           <Button
