@@ -102,6 +102,13 @@ export interface ProcessedIssue {
   comments: number;
 }
 
+export interface GitHubRepoData {
+  stargazers_count: number;
+  name: string;
+  full_name: string;
+  html_url: string;
+}
+
 export const searchGitHubIssues = async (
   language?: string,
   labels?: string[],
@@ -204,4 +211,63 @@ export const getRateLimitInfo = () => ({
 // Clear cache utility
 export const clearCache = () => {
   cache.clear();
+};
+
+// Get repository data including star count
+export const getRepoData = async (owner: string, repo: string): Promise<GitHubRepoData> => {
+  const cacheKey = `repo_${owner}_${repo}`;
+  const cached = getCachedData(cacheKey);
+
+  if (cached) {
+    return cached;
+  }
+
+  try {
+    const url = `${GITHUB_API_BASE}/repos/${owner}/${repo}`;
+    const headers: Record<string, string> = {
+      'Accept': 'application/vnd.github.v3+json',
+      'X-GitHub-Api-Version': '2022-11-28'
+    };
+
+    // Add token in development
+    if (!import.meta.env.PROD && GITHUB_TOKEN) {
+      headers['Authorization'] = `token ${GITHUB_TOKEN}`;
+    }
+
+    const response = await fetchWithRetry(url, headers);
+
+    if (!response.ok) {
+      throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    const repoData: GitHubRepoData = {
+      stargazers_count: data.stargazers_count,
+      name: data.name,
+      full_name: data.full_name,
+      html_url: data.html_url,
+    };
+
+    // Cache the results
+    setCachedData(cacheKey, repoData);
+
+    return repoData;
+  } catch (error) {
+    console.error('Error fetching repository data:', error);
+
+    // Return fallback data
+    return {
+      stargazers_count: 220,
+      name: repo,
+      full_name: `${owner}/${repo}`,
+      html_url: `https://github.com/${owner}/${repo}`,
+    };
+  }
+};
+
+// Get star count only
+export const getStarCount = async (owner: string, repo: string): Promise<number> => {
+  const data = await getRepoData(owner, repo);
+  return data.stargazers_count;
 };

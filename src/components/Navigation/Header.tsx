@@ -2,16 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { useAuth } from '@/hooks/useAuth'
+import { useSidebar } from '@/contexts/SidebarContext'
+import { getStarCount } from '@/services/githubApi'
 import {
   Menu,
   X,
@@ -21,13 +15,18 @@ import {
   Settings,
   History,
   Github,
-  ChevronDown
+  Home,
+  TrendingUp,
+  Lightbulb,
+  Star
 } from 'lucide-react'
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [starCount, setStarCount] = useState<number | null>(null)
   const { user, logout } = useAuth()
+  const { isOpen, toggleSidebar } = useSidebar()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -38,6 +37,23 @@ export function Header() {
 
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  useEffect(() => {
+    const fetchStarCount = async () => {
+      try {
+        const count = await getStarCount('piyushdhokas', 'Repo-Scout')
+        setStarCount(count)
+      } catch (error) {
+        console.error('Failed to fetch star count:', error)
+        setStarCount(220) // Fallback
+      }
+    }
+
+    fetchStarCount()
+    // Refresh star count every 5 minutes
+    const interval = setInterval(fetchStarCount, 5 * 60 * 1000)
+    return () => clearInterval(interval)
   }, [])
 
   const handleLogout = async () => {
@@ -90,87 +106,61 @@ export function Header() {
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <img
-              src="/repo_logo.png"
-              alt="Repo Scout logo"
-              className="h-8 w-8 rounded-full object-cover shadow-sm"
-            />
-            <span className="text-lg sm:text-xl font-bold text-white font-instrument">Repo Scout</span>
-          </Link>
+          {/* Left side - Logo and Hamburger */}
+          <div className="flex items-center gap-4">
+            {/* Desktop Sidebar Toggle - Left side */}
+            {user && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleSidebar}
+                className="hidden md:flex text-gray-300 hover:text-white transition-colors"
+                title={isOpen ? "Close sidebar" : "Open sidebar"}
+              >
+                {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </Button>
+            )}
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-6 font-instrument">
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-2">
+              <img
+                src="/repo_logo.png"
+                alt="Repo Scout logo"
+                className="h-8 w-8 rounded-full object-cover shadow-sm"
+              />
+              <span className="text-lg sm:text-xl font-bold text-white font-instrument">Repo Scout</span>
+            </Link>
+          </div>
+
+          {/* Center - Desktop Navigation - Properly centered */}
+          <nav className="hidden md:flex-1 items-center justify-center font-instrument">
             {user && (
               <Link
                 to="/home"
-                className="text-gray-300 hover:text-white transition-colors"
+                className="text-gray-300 hover:text-white transition-colors font-medium"
               >
                 Search
               </Link>
             )}
           </nav>
 
-          {/* Desktop Auth */}
-          <div className="hidden md:flex items-center gap-2 lg:gap-4">
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="relative h-10 w-10 rounded-full"
-                  >
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
-                      <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                        {getUserInitials(user)}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56 border-gray-800 bg-gray-900" align="end" forceMount>
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none text-white">
-                        {user.displayName || 'User'}
-                      </p>
-                      <p className="text-xs leading-none text-gray-400">
-                        {user.email}
-                      </p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator className="bg-gray-800" />
-                  <DropdownMenuItem
-                    onClick={() => navigate('/home')}
-                    className="text-gray-300 hover:text-white focus:text-white focus:bg-gray-800"
-                  >
-                    <Search className="mr-2 h-4 w-4" />
-                    Search Issues
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="text-gray-300 hover:text-white focus:text-white focus:bg-gray-800"
-                  >
-                    <History className="mr-2 h-4 w-4" />
-                    My Contributions
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="text-gray-300 hover:text-white focus:text-white focus:bg-gray-800"
-                  >
-                    <Settings className="mr-2 h-4 w-4" />
-                    Settings
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-gray-800" />
-                  <DropdownMenuItem
-                    onClick={handleLogout}
-                    className="text-gray-300 hover:text-white focus:text-white focus:bg-gray-800"
-                  >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Log out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
+          {/* Right side - GitHub Star button and auth */}
+          <div className="hidden md:flex items-center gap-3">
+            {/* GitHub Star Button */}
+            {user && (
+              <Button
+                variant="outline"
+                onClick={() => window.open('https://github.com/piyushdhokas/Repo-Scout', '_blank')}
+                className="bg-gray-900 border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white transition-all duration-200 gap-2"
+              >
+                <Star className="h-4 w-4" />
+                <span className="hidden sm:inline">
+                  {starCount !== null ? `★${starCount.toLocaleString()}` : 'Star'}
+                </span>
+              </Button>
+            )}
+
+            {!user && (
               <Button
                 onClick={() => navigate('/auth')}
                 className="bg-blue-600 hover:bg-blue-700 text-white text-sm auth-button"
@@ -210,13 +200,40 @@ export function Header() {
 
                 <nav className="flex-1 space-y-4">
                   {user && (
-                    <Link
-                      to="/home"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-900 rounded-lg transition-colors"
-                    >
-                      Search
-                    </Link>
+                    <>
+                      <Link
+                        to="/"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-900 rounded-lg transition-colors"
+                      >
+                        <Home className="h-5 w-5" />
+                        Home
+                      </Link>
+                      <Link
+                        to="/home"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-900 rounded-lg transition-colors"
+                      >
+                        <Search className="h-5 w-5" />
+                        Search
+                      </Link>
+                      <Link
+                        to="/home"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-900 rounded-lg transition-colors"
+                      >
+                        <TrendingUp className="h-5 w-5" />
+                        Trending
+                      </Link>
+                      <Link
+                        to="/suggest"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-900 rounded-lg transition-colors"
+                      >
+                        <Lightbulb className="h-5 w-5" />
+                        Suggest Feature
+                      </Link>
+                    </>
                   )}
                 </nav>
 
@@ -251,6 +268,19 @@ export function Header() {
                         >
                           <Search className="mr-2 h-4 w-4" />
                           Search Repositories
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          onClick={() => {
+                            window.open('https://github.com/piyushdhokas/Repo-Scout', '_blank')
+                            setIsMobileMenuOpen(false)
+                          }}
+                          className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-900"
+                        >
+                          <Star className="mr-2 h-4 w-4" />
+                          <span>
+                            {starCount !== null ? `★${starCount.toLocaleString()} on GitHub` : 'Star on GitHub'}
+                          </span>
                         </Button>
                         <Button
                           variant="ghost"
