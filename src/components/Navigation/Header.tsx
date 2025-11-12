@@ -95,8 +95,9 @@ export function Header() {
                 size="icon"
                 onClick={toggleSidebar}
                 className="hidden md:flex text-gray-300 hover:text-white transition-colors"
+                title={isOpen ? "Close sidebar" : "Open sidebar"}
               >
-                <Menu className="h-5 w-5" />
+                {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </Button>
             )}
 
