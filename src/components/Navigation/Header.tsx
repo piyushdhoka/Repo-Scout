@@ -113,20 +113,32 @@ export function Header() {
             </Link>
           </div>
 
-          {/* Center - Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-6 font-instrument">
+          {/* Center - Desktop Navigation - Properly centered */}
+          <nav className="hidden md:flex-1 items-center justify-center font-instrument">
             {user && (
               <Link
                 to="/home"
-                className="text-gray-300 hover:text-white transition-colors"
+                className="text-gray-300 hover:text-white transition-colors font-medium"
               >
                 Search
               </Link>
             )}
           </nav>
 
-          {/* Right side - Empty for desktop, Mobile menu for mobile */}
-          <div className="hidden md:flex items-center gap-2 lg:gap-4">
+          {/* Right side - GitHub Star button and auth */}
+          <div className="hidden md:flex items-center gap-3">
+            {/* GitHub Star Button */}
+            {user && (
+              <Button
+                variant="outline"
+                onClick={() => window.open('https://github.com/piyushdhokas/Repo-Scout', '_blank')}
+                className="bg-gray-900 border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white transition-all duration-200 gap-2"
+              >
+                <Star className="h-4 w-4" />
+                <span className="hidden sm:inline">Star</span>
+              </Button>
+            )}
+
             {!user && (
               <Button
                 onClick={() => navigate('/auth')}
