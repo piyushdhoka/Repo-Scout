@@ -24,6 +24,7 @@ import {
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [starCount, setStarCount] = useState<number | null>(null)
   const { user, logout } = useAuth()
   const { isOpen, toggleSidebar } = useSidebar()
   const navigate = useNavigate()
