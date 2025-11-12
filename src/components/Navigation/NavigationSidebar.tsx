@@ -72,32 +72,32 @@ export function NavigationSidebar() {
         </div>
 
         {/* Navigation Section */}
-        <nav className="flex-1 p-4 space-y-2">
+        <nav className="flex-1 p-6 space-y-3">
           <Button
             variant="ghost"
             onClick={() => handleNavigation('/')}
-            className="nav-button w-full justify-start gap-3 text-gray-300 hover:text-white hover:bg-gray-900"
+            className="w-full justify-start gap-4 px-4 py-3 text-gray-300 hover:text-white hover:bg-gray-900 rounded-lg transition-all duration-200 hover:translate-x-1"
           >
-            <Home className="h-5 w-5" />
-            Home
+            <Home className="h-5 w-5 flex-shrink-0" />
+            <span className="font-medium">Home</span>
           </Button>
 
           <Button
             variant="ghost"
             onClick={() => handleNavigation('/home')}
-            className="nav-button w-full justify-start gap-3 text-gray-300 hover:text-white hover:bg-gray-900"
+            className="w-full justify-start gap-4 px-4 py-3 text-gray-300 hover:text-white hover:bg-gray-900 rounded-lg transition-all duration-200 hover:translate-x-1"
           >
-            <TrendingUp className="h-5 w-5" />
-            Trending
+            <TrendingUp className="h-5 w-5 flex-shrink-0" />
+            <span className="font-medium">Trending</span>
           </Button>
 
           <Button
             variant="ghost"
             onClick={() => handleNavigation('/suggest')}
-            className="nav-button w-full justify-start gap-3 text-gray-300 hover:text-white hover:bg-gray-900"
+            className="w-full justify-start gap-4 px-4 py-3 text-gray-300 hover:text-white hover:bg-gray-900 rounded-lg transition-all duration-200 hover:translate-x-1"
           >
-            <Lightbulb className="h-5 w-5" />
-            Suggest Feature
+            <Lightbulb className="h-5 w-5 flex-shrink-0" />
+            <span className="font-medium">Suggest Feature</span>
           </Button>
         </nav>
 
