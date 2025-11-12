@@ -250,6 +250,17 @@ export function Header() {
                         </Button>
                         <Button
                           variant="ghost"
+                          onClick={() => {
+                            window.open('https://github.com/piyushdhokas/Repo-Scout', '_blank')
+                            setIsMobileMenuOpen(false)
+                          }}
+                          className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-900"
+                        >
+                          <Star className="mr-2 h-4 w-4" />
+                          Star on GitHub
+                        </Button>
+                        <Button
+                          variant="ghost"
                           className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-900"
                         >
                           <History className="mr-2 h-4 w-4" />
