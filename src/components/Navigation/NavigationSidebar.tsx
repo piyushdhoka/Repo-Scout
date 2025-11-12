@@ -57,7 +57,7 @@ export function NavigationSidebar() {
       )}
 
       {/* Sidebar */}
-      <div className={`navigation-sidebar fixed top-16 left-0 h-[calc(100vh-4rem)] w-80 bg-black border-r border-gray-800 z-40 flex flex-col transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+      <div className={`navigation-sidebar fixed top-16 left-0 h-[calc(100vh-4rem)] w-80 bg-black border-r border-gray-800 z-40 flex flex-col transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         {/* Header */}
         <div className="flex items-center justify-end p-4 border-b border-gray-800">
           <Button
