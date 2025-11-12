@@ -48,6 +48,12 @@
   --glow-blue: 0 0 20px rgba(59, 130, 246, 0.3);
   --glow-purple: 0 0 20px rgba(139, 92, 246, 0.3);
   --glow-gold: 0 0 20px rgba(251, 191, 36, 0.3);
+
+  /* Sidebar Variables */
+  --sidebar-width: 320px;
+  --sidebar-slide-duration: 0.3s;
+  --nav-button-padding: 14px 16px;
+  --nav-button-gap: 12px;
 }
 
 /* Global Styles */
