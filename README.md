@@ -1,6 +1,3 @@
-<img width="1024" height="1024" alt="repo_logo" src="https://github.com/user-attachments/assets/b44aa4fb-a23b-40dd-b647-8f57984eb652" />
-
-
 # Repo Scout
 
 Repo Scout helps you discover, filter, and contribute to open-source projects by surfacing GitHub issues that match your skills and interests. This repository contains the web frontend and an optional backend proxy to simplify calls to the GitHub API.
